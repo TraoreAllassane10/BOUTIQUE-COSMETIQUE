@@ -1,0 +1,10 @@
+{
+  "name": "Cosmet",
+  "scripts": {
+    "postdeploy": "php artisan migrate --force"
+  },
+  "env": {
+    "APP_ENV": "production",
+    "APP_DEBUG": "false"
+  }
+}
