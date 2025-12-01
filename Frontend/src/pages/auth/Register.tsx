@@ -6,8 +6,61 @@ import gg from "@/assets/chercher.png";
 import fb from "@/assets/facebook.png";
 import insta from "@/assets/instagram.png";
 import AuthLayout from "@/layouts/AuthLayout";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useRegisterUserMutation } from "@/store/api/authApi";
+import { useNavigate } from "react-router-dom";
+import { setCredentials } from "@/store/slices/authSlice";
+
+// Schema de validation avec zod
+const FormSchema = z.object({
+  name: z.string().min(2, "Le nom doit contenir au moins 2 caractères"),
+  email: z.string().email("Adresse e-mail invalide"),
+  password: z
+    .string()
+    .min(4, "Le mot de passe doit contenir au moins 4 caractères"),
+});
+
+// Interfer le type TypeScript à partir du schema zod
+type FormData = z.infer<typeof FormSchema>;
 
 const Register = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    reset,
+  } = useForm<FormData>({
+    resolver: zodResolver(FormSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      password: "",
+    },
+  });
+
+  const [registerUser] = useRegisterUserMutation();
+  const navigate = useNavigate();
+
+  // Soumission du formulaire
+  const onSubmit = async (data: FormData) => {
+    try {
+      
+      // Envoie de la requete au serveur en passant par RTK Query
+      const response = await registerUser(data).unwrap();
+
+      // Redirection vers la page de connection
+      if (response.success) {
+        navigate("/");
+      }
+
+      reset();
+    } catch (error) {
+      console.error("Erreur lors de l'inscription :", error);
+    }
+  };
+
   return (
     <AuthLayout>
       {/* Gauche */}
@@ -19,11 +72,46 @@ const Register = () => {
         </div>
 
         <div className="mt-14">
-          <form action="" className="space-y-6">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             <div className="space-y-3">
-              <Input type="text" placeholder="Allassane Traore" />
-              <Input type="email" placeholder="allassane@gmail.com" />
-              <Input type="password" placeholder="*******" />
+              <div>
+                <Input
+                  type="text"
+                  placeholder="Allassane Traore"
+                  {...register("name")}
+                />
+                {errors.name && (
+                  <p className="mt-1 text-sm text-red-600">
+                    {errors.name.message}
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <Input
+                  type="email"
+                  placeholder="allassane@gmail.com"
+                  {...register("email")}
+                />
+                {errors.email && (
+                  <p className="mt-1 text-sm text-red-600">
+                    {errors.email.message}
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <Input
+                  type="password"
+                  placeholder="*******"
+                  {...register("password")}
+                />
+                {errors.password && (
+                  <p className="mt-1 text-sm text-red-600">
+                    {errors.password.message}
+                  </p>
+                )}
+              </div>
             </div>
 
             <div className="flex justify-between text-sm text-gray-500">
@@ -35,7 +123,9 @@ const Register = () => {
               <a href="#">Mot de passe oublié ?</a>
             </div>
 
-            <Button>S'inscrire</Button>
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? "Inscription..." : "S'inscrire"}
+            </Button>
           </form>
         </div>
 
