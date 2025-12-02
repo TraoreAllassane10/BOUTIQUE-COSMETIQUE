@@ -7,7 +7,7 @@ import Client from "./pages/Client";
 import Commande from "./pages/Commande";
 import Parametre from "./pages/Parametre";
 import ProtectedRoute from "./components/ProtectedRoute";
-import Categorie from "./pages/Categorie";
+import Categorie from "./pages/categorie/Categorie";
 import Produit from "./pages/Produit";
 
 function App() {

@@ -19,7 +19,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-
 import {
   Sheet,
   SheetClose,
@@ -30,24 +29,71 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Label } from "@/components/ui/label";
-import { useGetCategoriesQuery } from "@/store/api/categorieApi";
+import { useCreateCategorieMutation, useGetCategoriesQuery } from "@/store/api/categorieApi";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 interface Categorie {
   id: number;
   nom: string;
 }
 
+const formSchema = z.object({
+  nom: z.string().min(3, "Le nom doit contenir au moins 3 caractères"),
+});
+
+type FormData = z.infer<typeof formSchema>;
+
 const Categorie = () => {
 
+  const navigate = useNavigate()
+
+  // Chargement des categories depuis L'API
   const { data, isLoading, error } = useGetCategoriesQuery();
 
+  // Mutation pour créer une nouvelle catégorie
+  const [createCategorie, {data: createData, isLoading: createLoading, error: createError}] = useCreateCategorieMutation();
+
+  //Validation du formulaire d'ajout de catégorie
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<FormData>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      nom: "",
+    },
+  });
+
+  // Soumission du formulaire
+  const onSubmit = async (data: FormData) => {
+
+    // Creation de la categorie via l'API
+    await createCategorie({nom: data.nom}).unwrap();
+
+    // S'il n'y a pas d'erreur
+    if (!createError)
+    {
+      toast.success("Catégorie créée avec succès !");
+
+      // Rafraichir la page
+      navigate(0); 
+    }
+
+    reset();
+  };
 
   return (
     <DashboardLayout>
       <div className="p-6">
         <div className="flex justify-between place-items-center mb-6">
           <h1 className="text-3xl text-slate-800 font-bold">Catégories</h1>
-        {/* {
+          {/* {
           errors && <p className="text-red-500">Erreur lors du chargement des catégories</p>
         } */}
           <Sheet>
@@ -60,19 +106,16 @@ const Categorie = () => {
             <SheetContent>
               <SheetHeader>
                 <SheetTitle>Enregistrer un catégorie</SheetTitle>
-                {/* <SheetDescription>
-                  Make changes to your profile here. Click save when you&apos;re
-                  done.
-                </SheetDescription> */}
               </SheetHeader>
               <div className="grid flex-1 auto-rows-min gap-6 px-4">
                 <div className="grid gap-3">
                   <Label htmlFor="sheet-demo-name">Nom de la Catégorie</Label>
-                  <Input  />
+                  <Input {...register("nom")} />
+                  <p className="text-sm text-red-500">{errors?.nom?.message}</p>
                 </div>
               </div>
               <SheetFooter>
-                <Button type="submit">Enregister</Button>
+                <Button onClick={handleSubmit(onSubmit)} disabled={createLoading}>Enregister</Button>
                 <SheetClose asChild>
                   <Button variant="outline">Fermer</Button>
                 </SheetClose>
@@ -109,8 +152,10 @@ const Categorie = () => {
               <TableBody>
                 {data?.data.map((categorie: Categorie) => (
                   <TableRow key={categorie.id} className="text-gray-500">
-                    <TableCell className="font-medium">{categorie.nom}</TableCell>
-          
+                    <TableCell className="font-medium">
+                      {categorie.nom}
+                    </TableCell>
+
                     <TableCell className="flex gap-2 float-right px-8">
                       <a href="">
                         <Eye />

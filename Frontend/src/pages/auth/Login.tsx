@@ -50,7 +50,6 @@ const Login = () => {
     try {
       // Envoie de la requete au serveur en passant par RTK Query
       const response = await login(data).unwrap();
-      console.log("Réponse du serveur :", response);
 
       // Mise à jour du state global avec les informations de l'utilisateur
       dispatch(
