@@ -7,6 +7,8 @@ import Client from "./pages/Client";
 import Commande from "./pages/Commande";
 import Parametre from "./pages/Parametre";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Categorie from "./pages/Categorie";
+import Produit from "./pages/Produit";
 
 function App() {
   return (
@@ -16,6 +18,8 @@ function App() {
           <Route path="/" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/categorie" element={<Categorie />} />
+          <Route path="/produit" element={<Produit />} />
           <Route path="/client" element={<Client />} />
           <Route path="/commande" element={<Commande />} />
           <Route path="/paramettre" element={<Parametre />} />

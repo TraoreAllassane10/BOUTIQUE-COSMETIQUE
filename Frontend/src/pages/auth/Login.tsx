@@ -62,6 +62,7 @@ const Login = () => {
       );
 
       if (response.success) {
+        localStorage.setItem("token", response.token);
         navigate("/dashboard");
       }
 

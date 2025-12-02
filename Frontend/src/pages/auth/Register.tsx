@@ -11,7 +11,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRegisterUserMutation } from "@/store/api/authApi";
 import { useNavigate } from "react-router-dom";
-import { setCredentials } from "@/store/slices/authSlice";
 
 // Schema de validation avec zod
 const FormSchema = z.object({
