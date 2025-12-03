@@ -1,4 +1,16 @@
 import { createSlice } from "@reduxjs/toolkit";
+import type { RootState } from "../store";
+
+interface Action {
+ payload: { user: any; token: string; isAuthenticated: boolean; } 
+
+}
+
+interface State {
+  user: any;
+  token: string | null;
+  isAuthenticated: boolean;
+}
 
 const initialState = {
   user: null,
@@ -10,7 +22,7 @@ const authSclice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setCredentials: (state, action) => {
+    setCredentials: (state: State, action: Action) => {
       state.user = action.payload.user;
       state.token = action.payload.token;
       state.isAuthenticated = true;
@@ -25,9 +37,11 @@ const authSclice = createSlice({
   },
 }); 
 
+
+
 export const {setCredentials, logout} = authSclice.actions;
 export default authSclice.reducer;
 
-export const selectCurrentUser = (state) => state.auth.user;
-export const selectCurrentToken = (state) => state.auth.token;
-export const selectIsAythentticated = (state) => state.auth.isAuthenticated;
+export const selectCurrentUser = (state: RootState) => state.auth.user;
+export const selectCurrentToken = (state: RootState) => state.auth.token;
+export const selectIsAythentticated = (state: RootState) => state.auth.isAuthenticated;

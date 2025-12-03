@@ -9,10 +9,13 @@ export const categorieApi = createApi({
   reducerPath: "categorieApi",
   baseQuery,
   endpoints: (builder) => ({
+
+    // Recuperation de la liste des categories
     getCategories: builder.query({
       query: () => "/admin/categories",
     }),
 
+    // Creation d'une nouvelle categorie
     createCategorie: builder.mutation({
       query: (categorieData: CategorieData) => ({
         url: "/admin/categories",
@@ -20,8 +23,30 @@ export const categorieApi = createApi({
         body: categorieData,
       }),
     }),
+
+    // Recuperation d'une categorie par son ID
+    getCategorieById: builder.query({
+      query: (id) => `/admin/categories/${id}`
+    }),
+
+    // Mise à jour d'une categorie par son ID
+    updateCategorie: builder.mutation({
+      query: ({id, nom} : {id: string, nom: string}) => ({
+        url: `/admin/categories/${id}`,
+        method: "PUT",
+        body: {nom},
+      })
+    }),
+
+    // Suppression d'une categorie par son ID
+    deleteCategorie: builder.mutation({
+      query: (id) => ({
+        url: `/admin/categories/${id}`,
+        method: "DELETE",
+      })
+    })
   }),
 });
 
-export const { useGetCategoriesQuery, useCreateCategorieMutation } =
+export const { useGetCategoriesQuery, useCreateCategorieMutation, useGetCategorieByIdQuery ,useUpdateCategorieMutation, useDeleteCategorieMutation } =
   categorieApi;

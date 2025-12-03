@@ -1,13 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
 import authReducer from "./slices/authSlice"
-import categorieReducer from "./slices/categorieSlice"
 import { authApi } from './api/authApi';
 import { categorieApi } from './api/categorieApi';
+
 
 export const store = configureStore({
     reducer: {
         auth: authReducer,
-        categorie: categorieReducer,
         [authApi.reducerPath]: authApi.reducer,
         [categorieApi.reducerPath]: categorieApi.reducer
     },
@@ -16,3 +15,6 @@ export const store = configureStore({
         return getDefaultMiddleware().concat(authApi.middleware, categorieApi.middleware);
     }
 })
+
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
