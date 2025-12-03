@@ -8,7 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Edit, Eye, Trash } from "lucide-react";
+import { Edit, Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -31,6 +31,7 @@ import {
 import { Label } from "@/components/ui/label";
 import {
   useCreateCategorieMutation,
+  useDeleteCategorieMutation,
   useGetCategoriesQuery,
 } from "@/store/api/categorieApi";
 import { z } from "zod";
@@ -59,6 +60,10 @@ const Categorie = () => {
   // Mutation pour créer une nouvelle catégorie
   const [createCategorie, { isLoading: createLoading, error: createError }] =
     useCreateCategorieMutation();
+
+  // Mutation pour supprimer une catégorie
+  const [deleteCategorie, { error: deleteError }] =
+    useDeleteCategorieMutation();
 
   //Validation du formulaire d'ajout de catégorie
   const {
@@ -92,6 +97,27 @@ const Categorie = () => {
     } catch (error) {
       toast.error(
         "Une erreur est survenue lors de la création de la catégorie"
+      );
+      console.error(error);
+    }
+  };
+
+  // Suppression d'une catégorie
+  const handleDelete = async (id: number) => {
+    try {
+      // Suppression via l'API
+      await deleteCategorie(id).unwrap();
+
+      if (!deleteError) {
+        toast.success("Catégorie supprimée avec succès !");
+
+        // Rafraichir la page
+        navigate(0);
+      }
+
+    } catch (error) {
+      toast.error(
+        "Une erreur est survenue lors de la suppression de la catégorie"
       );
       console.error(error);
     }
@@ -174,13 +200,11 @@ const Categorie = () => {
                       </TableCell>
 
                       <TableCell className="flex gap-2 float-right px-8">
-                        <a href="">
-                          <Eye />
-                        </a>
-                        <a href={`categorie/${categorie.id}`}>
+      
+                        <a href={`categorie/${categorie.id}`} className="cursor-pointer text-blue-500">
                           <Edit />
                         </a>
-                        <a href="">
+                        <a onClick={() => handleDelete(categorie.id)} className="cursor-pointer text-red-500">
                           <Trash />
                         </a>
                       </TableCell>

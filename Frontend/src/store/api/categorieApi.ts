@@ -36,9 +36,17 @@ export const categorieApi = createApi({
         method: "PUT",
         body: {nom},
       })
+    }),
+
+    // Suppression d'une categorie par son ID
+    deleteCategorie: builder.mutation({
+      query: (id) => ({
+        url: `/admin/categories/${id}`,
+        method: "DELETE",
+      })
     })
   }),
 });
 
-export const { useGetCategoriesQuery, useCreateCategorieMutation, useGetCategorieByIdQuery ,useUpdateCategorieMutation } =
+export const { useGetCategoriesQuery, useCreateCategorieMutation, useGetCategorieByIdQuery ,useUpdateCategorieMutation, useDeleteCategorieMutation } =
   categorieApi;
