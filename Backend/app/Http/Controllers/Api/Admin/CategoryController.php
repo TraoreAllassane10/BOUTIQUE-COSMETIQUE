@@ -5,9 +5,10 @@ namespace App\Http\Controllers\Api\Admin;
 use App\DTO\CreateCategoryDTO;
 use App\DTO\UpdateCategoryDTO;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Category\CategorieUpdateRequest;
 use App\Http\Requests\Category\CategoryStoreRequest;
 use App\Services\CategoryService;
-
+use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
@@ -36,7 +37,7 @@ class CategoryController extends Controller
         return $this->categoryService->create($dto);
     }
 
-    public function update(CategoryStoreRequest $request, string $id)
+    public function update(CategorieUpdateRequest $request, string $id)
     {
         // Recuperation de la donnée vaidée
         $data = $request->validated();

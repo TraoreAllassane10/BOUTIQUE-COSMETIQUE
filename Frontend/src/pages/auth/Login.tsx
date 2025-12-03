@@ -13,6 +13,7 @@ import { useLoginMutation } from "@/store/api/authApi";
 import { useNavigate } from "react-router-dom";
 import { setCredentials } from "@/store/slices/authSlice";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 
 // Schema de validation avec zod
 const FormSchema = z.object({
@@ -43,7 +44,7 @@ const Login = () => {
 
   const [login] = useLoginMutation();
   const navigate = useNavigate();
-  const dispatch = useNavigate();
+  const dispatch = useDispatch();
 
   // Soumission du formulaire
   const onSubmit = async (data: FormData) => {

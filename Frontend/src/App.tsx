@@ -9,6 +9,7 @@ import Parametre from "./pages/Parametre";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Categorie from "./pages/categorie/Categorie";
 import Produit from "./pages/Produit";
+import EditCategorie from "./pages/categorie/EditCategorie";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/categorie" element={<Categorie />} />
+          <Route path="/categorie/:id" element={<EditCategorie />} />
           <Route path="/produit" element={<Produit />} />
           <Route path="/client" element={<Client />} />
           <Route path="/commande" element={<Commande />} />

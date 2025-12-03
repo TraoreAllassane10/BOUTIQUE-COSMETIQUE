@@ -29,7 +29,10 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Label } from "@/components/ui/label";
-import { useCreateCategorieMutation, useGetCategoriesQuery } from "@/store/api/categorieApi";
+import {
+  useCreateCategorieMutation,
+  useGetCategoriesQuery,
+} from "@/store/api/categorieApi";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -48,14 +51,14 @@ const formSchema = z.object({
 type FormData = z.infer<typeof formSchema>;
 
 const Categorie = () => {
-
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   // Chargement des categories depuis L'API
-  const { data, isLoading, error } = useGetCategoriesQuery();
+  const { data, isLoading } = useGetCategoriesQuery(undefined);
 
   // Mutation pour créer une nouvelle catégorie
-  const [createCategorie, {data: createData, isLoading: createLoading, error: createError}] = useCreateCategorieMutation();
+  const [createCategorie, { isLoading: createLoading, error: createError }] =
+    useCreateCategorieMutation();
 
   //Validation du formulaire d'ajout de catégorie
   const {
@@ -72,20 +75,26 @@ const Categorie = () => {
 
   // Soumission du formulaire
   const onSubmit = async (data: FormData) => {
+    try {
+      // Creation de la categorie via l'API
+      await createCategorie({ nom: data.nom }).unwrap();
 
-    // Creation de la categorie via l'API
-    await createCategorie({nom: data.nom}).unwrap();
+      // S'il n'y a pas d'erreur
+      if (!createError) {
+        toast.success("Catégorie créée avec succès !");
 
-    // S'il n'y a pas d'erreur
-    if (!createError)
-    {
-      toast.success("Catégorie créée avec succès !");
+        // Rafraichir la page
+        navigate(0);
+      }
 
-      // Rafraichir la page
-      navigate(0); 
+      // Réinitialiser le formulaire
+      reset();
+    } catch (error) {
+      toast.error(
+        "Une erreur est survenue lors de la création de la catégorie"
+      );
+      console.error(error);
     }
-
-    reset();
   };
 
   return (
@@ -115,7 +124,12 @@ const Categorie = () => {
                 </div>
               </div>
               <SheetFooter>
-                <Button onClick={handleSubmit(onSubmit)} disabled={createLoading}>Enregister</Button>
+                <Button
+                  onClick={handleSubmit(onSubmit)}
+                  disabled={createLoading}
+                >
+                  Enregister
+                </Button>
                 <SheetClose asChild>
                   <Button variant="outline">Fermer</Button>
                 </SheetClose>
@@ -150,49 +164,29 @@ const Categorie = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {data?.data.map((categorie: Categorie) => (
-                  <TableRow key={categorie.id} className="text-gray-500">
-                    <TableCell className="font-medium">
-                      {categorie.nom}
-                    </TableCell>
+                {isLoading ? (
+                  <TableCell colSpan={2}>Chargement en cours...</TableCell>
+                ) : (
+                  data?.data.map((categorie: Categorie) => (
+                    <TableRow key={categorie.id} className="text-gray-500">
+                      <TableCell className="font-medium">
+                        {categorie.nom}
+                      </TableCell>
 
-                    <TableCell className="flex gap-2 float-right px-8">
-                      <a href="">
-                        <Eye />
-                      </a>
-                      <a href="">
-                        <Edit />
-                      </a>
-                      <a href="">
-                        <Trash />
-                      </a>
-                    </TableCell>
-                  </TableRow>
-                ))}
-
-                {/* <div className="my-8">
-                  <div className="flex gap-2 ">
-                    <Button
-                      onClick={prevPage}
-                      disabled={currentPage === 1}
-                      className="bg-transparent text-black border border-gray-300 hover:text-white cursor-pointer"
-                    >
-                      Precédent
-                    </Button>
-
-                    <p className="text-sm text-gray-600">
-                      Page {currentPage} / {totalPages}
-                    </p>
-
-                    <Button
-                      onClick={nextPage}
-                      disabled={currentPage === totalPages}
-                      className="bg-transparent text-black border border-gray-300 hover:text-white cursor-pointer"
-                    >
-                      Suivant
-                    </Button>
-                  </div>
-                </div> */}
+                      <TableCell className="flex gap-2 float-right px-8">
+                        <a href="">
+                          <Eye />
+                        </a>
+                        <a href={`categorie/${categorie.id}`}>
+                          <Edit />
+                        </a>
+                        <a href="">
+                          <Trash />
+                        </a>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
               </TableBody>
             </Table>
           </CardContent>
