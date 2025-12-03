@@ -18,9 +18,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
-import { Listeclient } from "@/database/data";
-import {  useState } from "react";
 import {
   Sheet,
   SheetClose,
@@ -31,38 +28,21 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Label } from "@/components/ui/label";
+import { useGetProduitsQuery } from "@/store/api/produitApi";
 
-interface Client {
+interface Produit {
   id: number;
   nom: string;
-  email: string;
-  telephone: number;
-  montant: number;
+  description: string;
+  prix: number;
+  stock: number;
+  image: string;
 }
 
 const Produit = () => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const clientParPage = 10;
 
-  // Calcule d'indice
-  const indexDernierClient = currentPage * clientParPage;
-  const indexPremierClient = indexDernierClient - clientParPage;
-  const ClientsActuelle = Listeclient.slice(
-    indexPremierClient,
-    indexDernierClient
-  );
-
-  // Calculer le nombre de page
-  const totalPages = Math.ceil(Listeclient.length / clientParPage);
-
-  // Fonctions de navigation
-  const nextPage = () => {
-    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
-  };
-
-  const prevPage = () => {
-    if (currentPage > 1) setCurrentPage(currentPage - 1);
-  };
+  // Chargement des produits
+  const { data, isLoading } = useGetProduitsQuery();
 
   return (
     <DashboardLayout>
@@ -80,10 +60,6 @@ const Produit = () => {
             <SheetContent>
               <SheetHeader>
                 <SheetTitle>Enregistrer un client</SheetTitle>
-                {/* <SheetDescription>
-                  Make changes to your profile here. Click save when you&apos;re
-                  done.
-                </SheetDescription> */}
               </SheetHeader>
               <div className="grid flex-1 auto-rows-min gap-6 px-4">
                 <div className="grid gap-3">
@@ -92,9 +68,9 @@ const Produit = () => {
                 </div>
                 <div className="grid gap-3">
                   <Label htmlFor="sheet-demo-username">Email</Label>
-                  <Input type="email" id="sheet-demo-username"  />
+                  <Input type="email" id="sheet-demo-username" />
                 </div>
-                  <div className="grid gap-3">
+                <div className="grid gap-3">
                   <Label htmlFor="sheet-demo-username">Telephone</Label>
                   <Input type="number" id="sheet-demo-username" />
                 </div>
@@ -126,68 +102,54 @@ const Produit = () => {
             </div>
           </CardHeader>
 
-            <CardContent className="w-full">
-              <Table className="w-full">
-                <TableHeader className="bg-gray-200">
+          <CardContent className="w-full">
+            <Table className="w-full">
+              <TableHeader className="bg-gray-200">
+                <TableRow>
+                  <TableHead className="w-[100px]">Nom</TableHead>
+                  <TableHead>Prix</TableHead>
+                  <TableHead>Stock total</TableHead>
+                  <TableHead>Image</TableHead>
+                  <TableHead>Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {isLoading ? (
                   <TableRow>
-                    <TableHead className="w-[100px]">Nom</TableHead>
-                    <TableHead>Email</TableHead>
-                    <TableHead>Telephone</TableHead>
-                    <TableHead>Montant depensé</TableHead>
-                    <TableHead>Actions</TableHead>
+                    <TableCell colSpan={5} className="text-center">
+                      Chargement en cours...
+                    </TableCell>
                   </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {ClientsActuelle?.map((client) => (
-                    <TableRow key={client.id} className="text-gray-500">
-                      <TableCell className="font-medium">{client.nom}</TableCell>
-                      <TableCell>{client.email}</TableCell>
-                      <TableCell>{client.telephone}</TableCell>
-                      <TableCell>
-                        <span className="">
-                          {client.montant.toLocaleString("XOF")} fcfa
-                        </span>
+                ) : (
+                  data?.data.map((produit: Produit) => (
+                    <TableRow key={produit.id} className="text-gray-500">
+                      <TableCell className="font-medium">
+                        {produit.nom}
                       </TableCell>
+                      <TableCell>
+                        {produit.prix.toLocaleString("XOF")} fcfa
+                      </TableCell>
+                      <TableCell>{produit.stock}</TableCell>
+                      <TableCell>{produit.image}</TableCell>
                       <TableCell className="flex gap-2">
                         <a href="">
-                          <Eye />
+                          <Eye className="text-yellow-500" />
+                        </a>
+                        <a href="" >
+                          <Edit className="text-blue-500" />
                         </a>
                         <a href="">
-                          <Edit />
-                        </a>
-                        <a href="">
-                          <Trash />
+                          <Trash className="text-red-500" />
                         </a>
                       </TableCell>
                     </TableRow>
-                  ))}
+                  ))
+                )}
 
-                  <div className="my-8">
-                    <div className="flex gap-2 ">
-                      <Button
-                        onClick={prevPage}
-                        disabled={currentPage === 1}
-                        className="bg-transparent text-black border border-gray-300 hover:text-white cursor-pointer"
-                      >
-                        Precédent
-                      </Button>
-
-                      <p className="text-sm text-gray-600">
-                        Page {currentPage} / {totalPages}
-                      </p>
-
-                      <Button
-                        onClick={nextPage}
-                        disabled={currentPage === totalPages}
-                        className="bg-transparent text-black border border-gray-300 hover:text-white cursor-pointer"
-                      >
-                        Suivant
-                      </Button>
-                    </div>
-                  </div>
-                </TableBody>
-              </Table>
-            </CardContent>
+                {}
+              </TableBody>
+            </Table>
+          </CardContent>
         </Card>
       </div>
     </DashboardLayout>

@@ -8,7 +8,7 @@ import Commande from "./pages/Commande";
 import Parametre from "./pages/Parametre";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Categorie from "./pages/categorie/Categorie";
-import Produit from "./pages/Produit";
+import Produit from "./pages/produit/Produit";
 import EditCategorie from "./pages/categorie/EditCategorie";
 
 function App() {
