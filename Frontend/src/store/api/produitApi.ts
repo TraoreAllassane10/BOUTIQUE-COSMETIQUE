@@ -10,6 +10,10 @@ export const produitApi = createApi({
       query: () => "/admin/products",
     }),
 
+    getProduitById: builder.query({
+      query: (id) => `/admin/products/${id}`,
+    }),
+
     // Creer un nouveau produit
     createProduit: builder.mutation({
       query: (formData) => ({
@@ -19,8 +23,32 @@ export const produitApi = createApi({
       }),
     }),
 
+    updateProduit: builder.mutation({
+      query: ({ id, formData }) => {
 
+        formData.append("_method", "PUT");
+        
+        return {
+          url: `/admin/products/${id}`,
+          method: "POST",
+          body: formData,
+        };
+      },
+    }),
+
+    deleteProduit: builder.mutation({
+      query: (id) => ({
+        url: `/admin/products/${id}`,
+        method: "DELETE",
+      }),
+    }),
   }),
 });
 
-export const { useGetProduitsQuery, useCreateProduitMutation } = produitApi;
+export const {
+  useGetProduitsQuery,
+  useCreateProduitMutation,
+  useGetProduitByIdQuery,
+  useUpdateProduitMutation,
+  useDeleteProduitMutation,
+} = produitApi;

@@ -26,9 +26,9 @@ class ProductStoreRequest extends FormRequest
         return [
             "nom" => "required",
             "description" => "required",
-            "prix" => "required|integer",
-            "stock" => "required|integer",
-            "image" => "required",
+            "prix" => "required",
+            "stock" => "required",
+            "image" => $this->isMethod("post") ? "required" : "nullable",
             "category_id" => "required"
         ];
     }
@@ -46,13 +46,11 @@ class ProductStoreRequest extends FormRequest
     {
         return [
             "nom.required" => "Entrer le nom du produit",
-            "description" => "Entrer la description du produit",
+            "description.required" => "Entrer la description du produit",
             "prix.required" => "Entrer le prix du produit",
-            "prix.integer" => "Entrer un entier pour le produit",
             "stock.required" => "Entrer le stock du produit",
-            "stock.intyeger" => "Entrer un entier pour le stock",
             "image.required" => "Choissiser une image",
-            "category_id" => "Entrer la categorie du produit"
+            "category_id.required" => "Entrer la categorie du produit"
         ];
     }
 }

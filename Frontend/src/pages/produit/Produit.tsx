@@ -31,6 +31,7 @@ import {
 import {
   useGetProduitsQuery,
   useCreateProduitMutation,
+  useDeleteProduitMutation,
 } from "@/store/api/produitApi";
 import { z } from "zod";
 import { Textarea } from "@/components/ui/textarea";
@@ -90,13 +91,11 @@ const Produit = () => {
   // Chargement des categories depuis L'API
   const { data: categorieData } = useGetCategoriesQuery(undefined);
 
+  // Mutayion de suppression de produit
+  const [deleteProduit, { error: deleteError }] = useDeleteProduitMutation();
+
   // Mutation pour creer un produit
-  const [
-    createProduit,
-    {
-      error: createError,
-    },
-  ] = useCreateProduitMutation();
+  const [createProduit, { error: createError }] = useCreateProduitMutation();
 
   // Validation du formulaire
   const {
@@ -132,15 +131,24 @@ const Produit = () => {
       // Creation de produit
       await createProduit(formData).unwrap();
 
-      if (!createError)
-      {
+      if (!createError) {
         toast.success("Produit créé avec succès !");
-        navigate(0)
+        navigate(0);
       }
 
       reset();
     } catch (error) {
       console.error("Erreur lors de la création du produit:", error);
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+
+    await deleteProduit(id).unwrap();
+
+    if (!deleteError) {
+      navigate(0);
+      toast.success("Produit supprimé avec succès !");
     }
   };
 
@@ -263,10 +271,10 @@ const Produit = () => {
             <Table className="w-full">
               <TableHeader className="bg-gray-200">
                 <TableRow>
+                                    <TableHead>Image</TableHead>
                   <TableHead className="w-[100px]">Nom</TableHead>
                   <TableHead>Prix</TableHead>
                   <TableHead>Stock total</TableHead>
-                  <TableHead>Image</TableHead>
                   <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
@@ -280,6 +288,7 @@ const Produit = () => {
                 ) : (
                   data?.data.map((produit: Produit) => (
                     <TableRow key={produit.id} className="text-gray-500">
+                      <TableCell><img src={`http://127.0.0.1:8000/storage/${produit.image}`} alt={produit.nom} className="w-16 h-16 rounded object-cover" /></TableCell>
                       <TableCell className="font-medium">
                         {produit.nom}
                       </TableCell>
@@ -287,15 +296,14 @@ const Produit = () => {
                         {produit.prix.toLocaleString("XOF")} fcfa
                       </TableCell>
                       <TableCell>{produit.stock}</TableCell>
-                      <TableCell>{produit.image}</TableCell>
                       <TableCell className="flex gap-2">
                         <a href="">
                           <Eye className="text-yellow-500" />
                         </a>
-                        <a href="">
+                        <a href={`/produit/${produit.id}`}>
                           <Edit className="text-blue-500" />
                         </a>
-                        <a href="">
+                        <a onClick={() => handleDelete(produit.id)} className="cursor-pointer">
                           <Trash className="text-red-500" />
                         </a>
                       </TableCell>

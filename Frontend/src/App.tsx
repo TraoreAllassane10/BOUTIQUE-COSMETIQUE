@@ -10,6 +10,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Categorie from "./pages/categorie/Categorie";
 import Produit from "./pages/produit/Produit";
 import EditCategorie from "./pages/categorie/EditCategorie";
+import EditProduit from "./pages/produit/EditProduit";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Route path="/categorie" element={<Categorie />} />
           <Route path="/categorie/:id" element={<EditCategorie />} />
           <Route path="/produit" element={<Produit />} />
+          <Route path="/produit/:id" element={<EditProduit />} />
           <Route path="/client" element={<Client />} />
           <Route path="/commande" element={<Commande />} />
           <Route path="/paramettre" element={<Parametre />} />

@@ -13,6 +13,6 @@ class UpdateProductDTO
         public int $prix,
         public int $stock,
         public string $image,
-        public int $category_id
+        public string $category_id
     ) {}
 }

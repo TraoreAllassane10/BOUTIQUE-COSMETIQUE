@@ -7,6 +7,7 @@ use App\DTO\Product\UpdateProductDTO;
 use App\Http\Requests\Product\ProductStoreRequest;
 use Exception;
 use App\Repositories\ProductRespository;
+use Illuminate\Support\Facades\Storage;
 
 class ProductService
 {

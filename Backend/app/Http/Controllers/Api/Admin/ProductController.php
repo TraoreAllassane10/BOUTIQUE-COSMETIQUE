@@ -6,6 +6,7 @@ use App\DTO\Product\CreateProductDTO;
 use App\DTO\Product\UpdateProductDTO;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Product\ProductStoreRequest;
+use App\Models\Product;
 use App\Services\ProductService;
 use Illuminate\Http\Request;
 
@@ -48,11 +49,33 @@ class ProductController extends Controller
 
     public function update(ProductStoreRequest $request, string $id)
     {
-        // Recuperation de la donnée vaidée
         $data = $request->validated();
 
-        // Création d'un objet DTO
-        $dto = new UpdateProductDTO($data['nom'], $data['description'], $data['prix'], $data['stock'], $data['image'], $data['category_id']);
+        // Récupérer le produit existant
+        $product = Product::find($id);
+
+        // Préserver l'image actuelle par défaut
+        $imagePath = $product->image;
+
+        // Vérifier SI une nouvelle image est envoyée
+        if ($request->hasFile('image')) {
+            $nomFichier = time() . '.' . $request->image->extension();
+
+            $imagePath = $request->file('image')->storeAs(
+                'products',
+                $nomFichier,
+                'public'
+            );
+        }
+
+        $dto = new UpdateProductDTO(
+            $data['nom'],
+            $data['description'],
+            (int) $data['prix'],
+            (int) $data['stock'],
+            $imagePath,
+            (int) $data['category_id']
+        );
 
         return $this->productService->update($dto, $id);
     }
