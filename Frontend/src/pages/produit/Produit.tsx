@@ -12,13 +12,6 @@ import { Edit, Eye, Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
   Sheet,
   SheetClose,
   SheetContent,
@@ -28,7 +21,24 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Label } from "@/components/ui/label";
-import { useGetProduitsQuery } from "@/store/api/produitApi";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  useGetProduitsQuery,
+  useCreateProduitMutation,
+} from "@/store/api/produitApi";
+import { z } from "zod";
+import { Textarea } from "@/components/ui/textarea";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+import { useGetCategoriesQuery } from "@/store/api/categorieApi";
 
 interface Produit {
   id: number;
@@ -39,44 +49,191 @@ interface Produit {
   image: string;
 }
 
+interface categorie {
+  id: string;
+  nom: string;
+}
+
+// Schema validation du formulaire
+const formSchema = z.object({
+  nom: z.string().min(2, "Le nom doit contenir au moins 2 caractères"),
+  description: z
+    .string()
+    .min(10, "La description doit contenir au moins 10 caractères"),
+  prix: z.string().min(1, "Le prix doit être un nombre positif"),
+  stock: z.string().min(1, "Le stock doit être un nombre positif"),
+  category_id: z.string().min(1, "Selectionner une catégorie"),
+  image: z
+    .custom<FileList>((value) => value instanceof FileList, {
+      message: "Veuillez télécharger une image",
+    })
+    .refine((files) => files.length > 0, {
+      message: "Aucun fichier séléctionné",
+    })
+    .refine(
+      (files) =>
+        ["image/jpeg", "image/png", "image/jpg"].includes(files[0]?.type),
+      {
+        message: "L'image doit être en JPG ou PNG ou JPEG.",
+      }
+    ),
+});
+
+type FormData = z.infer<typeof formSchema>;
+
 const Produit = () => {
+  const navigate = useNavigate();
 
   // Chargement des produits
   const { data, isLoading } = useGetProduitsQuery();
+
+  // Chargement des categories depuis L'API
+  const { data: categorieData } = useGetCategoriesQuery(undefined);
+
+  // Mutation pour creer un produit
+  const [
+    createProduit,
+    {
+      error: createError,
+    },
+  ] = useCreateProduitMutation();
+
+  // Validation du formulaire
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      nom: "",
+      description: "",
+      prix: "",
+      stock: "",
+      image: undefined,
+    },
+  });
+
+  // Soumission du formulaire
+  const onsubmit = async (data: FormData) => {
+    try {
+      console.log(data);
+
+      const formData = new FormData();
+
+      formData.append("nom", data.nom);
+      formData.append("description", data.description);
+      formData.append("prix", data.prix);
+      formData.append("stock", data.stock);
+      formData.append("category_id", data.category_id);
+      formData.append("image", data.image[0]);
+
+      // Creation de produit
+      await createProduit(formData).unwrap();
+
+      if (!createError)
+      {
+        toast.success("Produit créé avec succès !");
+        navigate(0)
+      }
+
+      reset();
+    } catch (error) {
+      console.error("Erreur lors de la création du produit:", error);
+    }
+  };
 
   return (
     <DashboardLayout>
       <div className="p-6">
         <div className="flex justify-between place-items-center mb-6">
-          <h1 className="text-3xl text-slate-800 font-bold">Clients</h1>
+          <h1 className="text-3xl text-slate-800 font-bold">Produits</h1>
 
           <Sheet>
             <SheetTrigger asChild>
               {/* <Button variant="outline">Open</Button> */}
               <Button className="cursor-pointer rounded-full">
-                Ajouter un client
+                Ajouter un Produit
               </Button>
             </SheetTrigger>
             <SheetContent>
               <SheetHeader>
-                <SheetTitle>Enregistrer un client</SheetTitle>
+                <SheetTitle>Enregistrer un Produit</SheetTitle>
               </SheetHeader>
               <div className="grid flex-1 auto-rows-min gap-6 px-4">
                 <div className="grid gap-3">
-                  <Label htmlFor="sheet-demo-name">Nom Complet</Label>
-                  <Input id="sheet-demo-name" />
+                  <Label htmlFor="sheet-demo-name">Nom du produit</Label>
+                  <Input {...register("nom")} />
+                  {errors.nom && (
+                    <div className="text-red-500 text-sm">
+                      {errors.nom.message}
+                    </div>
+                  )}
                 </div>
                 <div className="grid gap-3">
-                  <Label htmlFor="sheet-demo-username">Email</Label>
-                  <Input type="email" id="sheet-demo-username" />
+                  <Label htmlFor="sheet-demo-username">Description</Label>
+                  <Textarea {...register("description")}> </Textarea>
+                  {errors.description && (
+                    <div className="text-red-500 text-sm">
+                      {errors.description.message}
+                    </div>
+                  )}
                 </div>
                 <div className="grid gap-3">
-                  <Label htmlFor="sheet-demo-username">Telephone</Label>
-                  <Input type="number" id="sheet-demo-username" />
+                  <Label htmlFor="sheet-demo-username">Prix</Label>
+                  <Input type="number" {...register("prix")} />
+                  {errors.prix && (
+                    <div className="text-red-500 text-sm">
+                      {errors.prix.message}
+                    </div>
+                  )}
+                </div>
+                <div className="grid gap-3">
+                  <Label htmlFor="sheet-demo-username">Stock</Label>
+                  <Input type="number" {...register("stock")} />
+                  {errors.stock && (
+                    <div className="text-red-500 text-sm">
+                      {errors.stock.message}
+                    </div>
+                  )}
+                </div>
+
+                <div className="grid gap-3">
+                  <Label>Catégorie</Label>
+                  <select
+                    {...register("category_id")}
+                    className="file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive"
+                  >
+                    <option value=""></option>
+                    {categorieData?.data.map((categorie: categorie) => (
+                      <option value={categorie.id} key={categorie.id}>
+                        {categorie.nom}
+                      </option>
+                    ))}
+                  </select>
+
+                  {errors.category_id && (
+                    <p className="text-red-500 text-sm">
+                      {errors.category_id.message}
+                    </p>
+                  )}
+                </div>
+
+                <div className="grid gap-3">
+                  <Label htmlFor="sheet-demo-username">Image</Label>
+                  <Input type="file" {...register("image")} />
+                  {errors.image && (
+                    <div className="text-red-500 text-sm">
+                      {errors.image.message}
+                    </div>
+                  )}
                 </div>
               </div>
               <SheetFooter>
-                <Button type="submit">Enregister</Button>
+                <Button onClick={handleSubmit(onsubmit)}>
+                  {isSubmitting ? "Enregistrement...." : "Enregister"}
+                </Button>
                 <SheetClose asChild>
                   <Button variant="outline">Fermer</Button>
                 </SheetClose>
@@ -135,7 +292,7 @@ const Produit = () => {
                         <a href="">
                           <Eye className="text-yellow-500" />
                         </a>
-                        <a href="" >
+                        <a href="">
                           <Edit className="text-blue-500" />
                         </a>
                         <a href="">

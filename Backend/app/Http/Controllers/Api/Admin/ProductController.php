@@ -27,10 +27,21 @@ class ProductController extends Controller
 
     public function store(ProductStoreRequest $request)
     {
+        // Recuperation de la donnée validée
         $data = $request->validated();
 
+        //nom du fichier image
+        $nomFichier = time() . '.' . $request->image->extension();
+
+        // Stockage de l'image dans le dossier storage
+        $path = $request->file('image')->storeAs(
+            'products',
+            $nomFichier,
+            'public'
+        );
+
         // Création d'un objet DTO
-        $dto = new CreateProductDTO($data['nom'], $data['description'], $data['prix'], $data['stock'], $data['image'], $data['category_id']);
+        $dto = new CreateProductDTO($data['nom'], $data['description'], $data['prix'], $data['stock'], $path, $data['category_id']);
 
         return $this->productService->create($dto);
     }

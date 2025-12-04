@@ -5,13 +5,22 @@ export const produitApi = createApi({
   reducerPath: "produitApi",
   baseQuery,
   endpoints: (builder) => ({
-
     // Recuperer tous les produits
     getProduits: builder.query<any, void>({
       query: () => "/admin/products",
     }),
 
+    // Creer un nouveau produit
+    createProduit: builder.mutation({
+      query: (formData) => ({
+        url: "/admin/products",
+        method: "POST",
+        body: formData,
+      }),
+    }),
+
+
   }),
 });
 
-export const { useGetProduitsQuery } = produitApi;
+export const { useGetProduitsQuery, useCreateProduitMutation } = produitApi;

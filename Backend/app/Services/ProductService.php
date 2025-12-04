@@ -73,7 +73,7 @@ class ProductService
                 "description" => $dto->description,
                 "prix" => $dto->prix,
                 "stock" => $dto->stock,
-                "image" => $dto->image,
+                "image" => $dto->image ,
                 "category_id" => $dto->category_id
             ]);
 
