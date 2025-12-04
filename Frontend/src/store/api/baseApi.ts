@@ -11,6 +11,7 @@ export const baseQuery = fetchBaseQuery({
         }
 
         headers.set('Accept', 'application/json');
+        
         return headers;
     }
 });
