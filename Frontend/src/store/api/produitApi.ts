@@ -5,9 +5,11 @@ export const produitApi = createApi({
   reducerPath: "produitApi",
   baseQuery,
   endpoints: (builder) => ({
+
     // Recuperer tous les produits
-    getProduits: builder.query<any, void>({
-      query: () => "/admin/products",
+    // Je definis la variable search pour l'adapter la fonction à la recherche et au filtre
+    getProduits: builder.query<any, {search?: string, categorie?: string} | void>({
+      query: (params) => `/admin/products?nom=${params?.search}&&categorie=${params?.categorie}`,
     }),
 
     getProduitById: builder.query({

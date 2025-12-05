@@ -7,6 +7,8 @@ use App\DTO\UpdateCategoryDTO;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Category\CategorieUpdateRequest;
 use App\Http\Requests\Category\CategoryStoreRequest;
+use App\Http\Resources\CategoryRessource;
+use App\Models\Category;
 use App\Services\CategoryService;
 use Illuminate\Http\Request;
 
@@ -16,9 +18,15 @@ class CategoryController extends Controller
         public CategoryService $categoryService
     ) {}
 
-    public function index()
+    public function index(Request $request)
     {
-        return $this->categoryService->all();
+        $nomCategorie = $request->query("nom");
+
+        $categories = Category::when($nomCategorie, function ($query) use ($nomCategorie) {
+            $query->where("nom", "like", "%{$nomCategorie}%");
+        })->latest()->get();
+
+        return CategoryRessource::collection($categories);
     }
 
     public function show(string $id)
@@ -42,7 +50,7 @@ class CategoryController extends Controller
         // Recuperation de la donnée vaidée
         $data = $request->validated();
 
-         // Creation d'un objet DTO
+        // Creation d'un objet DTO
         $dto = new UpdateCategoryDTO($data["nom"]);
 
         return $this->categoryService->update($id, $dto);

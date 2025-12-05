@@ -11,13 +11,6 @@ import {
 import { Edit, Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 import {
   Sheet,
@@ -39,6 +32,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 interface Categorie {
   id: number;
@@ -54,8 +48,10 @@ type FormData = z.infer<typeof formSchema>;
 const Categorie = () => {
   const navigate = useNavigate();
 
+  const [search, setSearch] = useState("");
+
   // Chargement des categories depuis L'API
-  const { data, isLoading } = useGetCategoriesQuery(undefined);
+  const { data, isLoading } = useGetCategoriesQuery(search);
 
   // Mutation pour créer une nouvelle catégorie
   const [createCategorie, { isLoading: createLoading, error: createError }] =
@@ -114,7 +110,6 @@ const Categorie = () => {
         // Rafraichir la page
         navigate(0);
       }
-
     } catch (error) {
       toast.error(
         "Une erreur est survenue lors de la suppression de la catégorie"
@@ -166,19 +161,13 @@ const Categorie = () => {
 
         <Card>
           <CardHeader className="flex justify-between">
-            <Input type="search" placeholder="Recherche" className="w-1/4" />
-
-            <div>
-              <Select>
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Filtre" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="dark">A-Z</SelectItem>
-                  <SelectItem value="system">Z-A</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+            <Input
+              type="search"
+              placeholder="Recherche"
+              className="w-1/4"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
           </CardHeader>
 
           <CardContent className="w-full">
@@ -200,11 +189,16 @@ const Categorie = () => {
                       </TableCell>
 
                       <TableCell className="flex gap-2 float-right px-8">
-      
-                        <a href={`categorie/${categorie.id}`} className="cursor-pointer text-blue-500">
+                        <a
+                          href={`categorie/${categorie.id}`}
+                          className="cursor-pointer text-blue-500"
+                        >
                           <Edit />
                         </a>
-                        <a onClick={() => handleDelete(categorie.id)} className="cursor-pointer text-red-500">
+                        <a
+                          onClick={() => handleDelete(categorie.id)}
+                          className="cursor-pointer text-red-500"
+                        >
                           <Trash />
                         </a>
                       </TableCell>
