@@ -6,6 +6,7 @@ use App\DTO\Product\CreateProductDTO;
 use App\DTO\Product\UpdateProductDTO;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Product\ProductStoreRequest;
+use App\Http\Resources\ProductRessource;
 use App\Models\Product;
 use App\Services\ProductService;
 use Illuminate\Http\Request;
@@ -19,18 +20,23 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         // Recuperation de nom de produit à rechercher
-        $nomProduit = $request->nom;
+        $nomProduit = $request->query("nom");
+        $categorie = $request->query("categorie");
 
-        if ($nomProduit)
-        {
-            $products = Product::where('nom', 'like', "'%'.$nomProduit.''%")->latest()->get();
-        }
-        else
-        {
-           $products = $this->productService->all();
-        }
+        $products = Product::when($nomProduit, function ($query) use ($nomProduit, $categorie) {
+            $query->where('nom', 'like', "%{$nomProduit}%");
+        })
+            ->when($categorie, function ($query) use ($categorie) {
+                $query->where("category_id", $categorie);
+            })->latest()->get();
 
-        return $products;
+        // if ($nomProduit) {
+        //     $products = ProductRessource::collection(Product::where('nom', 'like', '%' . $nomProduit . '%')->get());
+        // } else {
+        //     $products = $this->productService->all();
+        // }
+
+        return ProductRessource::collection($products);
     }
 
     public function show(string $id)

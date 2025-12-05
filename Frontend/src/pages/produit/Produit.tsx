@@ -40,6 +40,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
 import { useGetCategoriesQuery } from "@/store/api/categorieApi";
+import { useState } from "react";
 
 interface Produit {
   id: number;
@@ -51,7 +52,7 @@ interface Produit {
   category: {
     id: number;
     nom: string;
-  }
+  };
 }
 
 interface categorie {
@@ -89,8 +90,12 @@ type FormData = z.infer<typeof formSchema>;
 const Produit = () => {
   const navigate = useNavigate();
 
-  // Chargement des produits
-  const { data, isLoading } = useGetProduitsQuery();
+  // State de recherche
+  const [search, setSearch] = useState("");
+  const [categorieFiltre, setCategorieFiltre] = useState("0");
+
+  // Chargement des produits (La data changement lorsque nous mettons search à jour)
+  const { data, isLoading } = useGetProduitsQuery({ search, categorie: categorieFiltre });
 
   // Chargement des categories depuis L'API
   const { data: categorieData } = useGetCategoriesQuery(undefined);
@@ -146,6 +151,7 @@ const Produit = () => {
     }
   };
 
+  // Suppression d'un produit
   const handleDelete = async (id: number) => {
     await deleteProduit(id).unwrap();
 
@@ -255,16 +261,27 @@ const Produit = () => {
 
         <Card>
           <CardHeader className="flex justify-between">
-            <Input type="search" placeholder="Recherche" className="w-1/4" />
+            <Input
+              type="search"
+              placeholder="Recherche"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-1/4"
+            />
 
-            <div>
-              <Select>
+            <div className="flex gap-2 place-items-center">
+              <p>Catégorie : </p>
+              <Select onValueChange={(value) => setCategorieFiltre(value)}>
                 <SelectTrigger className="w-[180px]">
                   <SelectValue placeholder="Filtre" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="dark">A-Z</SelectItem>
-                  <SelectItem value="system">Z-A</SelectItem>
+                  <SelectItem value="0">Non selectionne</SelectItem>
+                  {categorieData?.data.map((categorie: categorie) => (
+                    <SelectItem value={categorie.id.toString()}>
+                      {categorie.nom}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
