@@ -12,7 +12,7 @@ export const categorieApi = createApi({
 
     // Recuperation de la liste des categories
     getCategories: builder.query({
-      query: () => "/admin/categories",
+      query: (search = "") => `/admin/categories?nom=${search}`,
     }),
 
     // Creation d'une nouvelle categorie

@@ -30,11 +30,6 @@ class ProductController extends Controller
                 $query->where("category_id", $categorie);
             })->latest()->get();
 
-        // if ($nomProduit) {
-        //     $products = ProductRessource::collection(Product::where('nom', 'like', '%' . $nomProduit . '%')->get());
-        // } else {
-        //     $products = $this->productService->all();
-        // }
 
         return ProductRessource::collection($products);
     }
