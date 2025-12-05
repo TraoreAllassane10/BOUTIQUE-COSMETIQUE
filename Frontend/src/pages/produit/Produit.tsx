@@ -38,7 +38,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useGetCategoriesQuery } from "@/store/api/categorieApi";
 
 interface Produit {
@@ -48,6 +48,10 @@ interface Produit {
   prix: number;
   stock: number;
   image: string;
+  category: {
+    id: number;
+    nom: string;
+  }
 }
 
 interface categorie {
@@ -143,7 +147,6 @@ const Produit = () => {
   };
 
   const handleDelete = async (id: number) => {
-
     await deleteProduit(id).unwrap();
 
     if (!deleteError) {
@@ -271,10 +274,11 @@ const Produit = () => {
             <Table className="w-full">
               <TableHeader className="bg-gray-200">
                 <TableRow>
-                                    <TableHead>Image</TableHead>
+                  <TableHead>Image</TableHead>
                   <TableHead className="w-[100px]">Nom</TableHead>
                   <TableHead>Prix</TableHead>
                   <TableHead>Stock total</TableHead>
+                  <TableHead>Catégorie</TableHead>
                   <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
@@ -288,7 +292,13 @@ const Produit = () => {
                 ) : (
                   data?.data.map((produit: Produit) => (
                     <TableRow key={produit.id} className="text-gray-500">
-                      <TableCell><img src={`http://127.0.0.1:8000/storage/${produit.image}`} alt={produit.nom} className="w-16 h-16 rounded object-cover" /></TableCell>
+                      <TableCell>
+                        <img
+                          src={`http://127.0.0.1:8000/storage/${produit.image}`}
+                          alt={produit.nom}
+                          className="w-16 h-16 rounded object-cover"
+                        />
+                      </TableCell>
                       <TableCell className="font-medium">
                         {produit.nom}
                       </TableCell>
@@ -296,14 +306,18 @@ const Produit = () => {
                         {produit.prix.toLocaleString("XOF")} fcfa
                       </TableCell>
                       <TableCell>{produit.stock}</TableCell>
+                      <TableCell>{produit.category?.nom}</TableCell>
                       <TableCell className="flex gap-2">
-                        <a href="">
+                        <Link to={`/produit/${produit.id}/show`}>
                           <Eye className="text-yellow-500" />
-                        </a>
-                        <a href={`/produit/${produit.id}`}>
+                        </Link>
+                        <Link to={`/produit/${produit.id}`}>
                           <Edit className="text-blue-500" />
-                        </a>
-                        <a onClick={() => handleDelete(produit.id)} className="cursor-pointer">
+                        </Link>
+                        <a
+                          onClick={() => handleDelete(produit.id)}
+                          className="cursor-pointer"
+                        >
                           <Trash className="text-red-500" />
                         </a>
                       </TableCell>

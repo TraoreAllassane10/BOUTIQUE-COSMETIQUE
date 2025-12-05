@@ -9,7 +9,7 @@ class ProductRespository
 {
     public function all()
     {
-        return ProductRessource::collection(Product::latest()->get());
+        return ProductRessource::collection(Product::with("category")->latest()->get());
     }
 
     public function find(string $id)

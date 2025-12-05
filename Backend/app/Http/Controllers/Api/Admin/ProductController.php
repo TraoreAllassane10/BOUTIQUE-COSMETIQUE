@@ -18,7 +18,19 @@ class ProductController extends Controller
 
     public function index(Request $request)
     {
-        return $this->productService->all();
+        // Recuperation de nom de produit à rechercher
+        $nomProduit = $request->nom;
+
+        if ($nomProduit)
+        {
+            $products = Product::where('nom', 'like', "'%'.$nomProduit.''%")->latest()->get();
+        }
+        else
+        {
+           $products = $this->productService->all();
+        }
+
+        return $products;
     }
 
     public function show(string $id)
