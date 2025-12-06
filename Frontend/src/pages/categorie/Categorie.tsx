@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import DashboardLayout from "@/layouts/DashboardLayout";
 import {
   Table,
@@ -33,6 +33,8 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { DonneesParPage } from "@/utlis/pagination";
+import PaginationBar from "@/components/PaginationBar";
 
 interface Categorie {
   id: number;
@@ -118,6 +120,16 @@ const Categorie = () => {
     }
   };
 
+  /* SYSTEME DE PAGINATION */
+  // La page courante
+  const [currentPage, setCurrenPage] = useState(1);
+
+  // Recuperation des données par page et le total de page
+  const [categoriesActuelles, totalPage] = DonneesParPage(
+    data?.data,
+    currentPage
+  );
+
   return (
     <DashboardLayout>
       <div className="p-6">
@@ -182,7 +194,7 @@ const Categorie = () => {
                 {isLoading ? (
                   <TableCell colSpan={2}>Chargement en cours...</TableCell>
                 ) : (
-                  data?.data.map((categorie: Categorie) => (
+                  categoriesActuelles.map((categorie: Categorie) => (
                     <TableRow key={categorie.id} className="text-gray-500">
                       <TableCell className="font-medium">
                         {categorie.nom}
@@ -208,6 +220,17 @@ const Categorie = () => {
               </TableBody>
             </Table>
           </CardContent>
+
+          <CardFooter>
+            {data?.data && (
+              <PaginationBar
+                data={categoriesActuelles}
+                currentPage={currentPage}
+                setCurrentPage={setCurrenPage}
+                totalPage={totalPage}
+              />
+            )}
+          </CardFooter>
         </Card>
       </div>
     </DashboardLayout>
