@@ -55,7 +55,7 @@ const Login = () => {
       // Mise à jour du state global avec les informations de l'utilisateur
       dispatch(
         setCredentials({
-          user: response.user,
+          user: response.data,
           token: response.token,
           isAuthenticated: true,
         })
@@ -64,6 +64,7 @@ const Login = () => {
       if (response.success) {
         localStorage.setItem("token", response.token);
         navigate("/dashboard");
+          console.log(response)
       }
 
       if (response.success === false) {
