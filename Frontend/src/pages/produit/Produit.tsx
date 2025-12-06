@@ -165,7 +165,7 @@ const Produit = () => {
   };
 
  
-  // SYSTEME DE PAGINATION
+   /* SYSTEME DE PAGINATION */
   // La page courante
   const [currentPage, setCurrenPage] = useState(1);
 

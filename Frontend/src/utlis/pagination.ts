@@ -1,7 +1,7 @@
 
 export function DonneesParPage(data: any, currentPage: number) {
   // Nombre d'element à afficher
-  const perPage = 2;
+  const perPage = 5;
 
   // Calucule du premier et le dernier element de chaque page
   const lastIndex = currentPage * perPage;
