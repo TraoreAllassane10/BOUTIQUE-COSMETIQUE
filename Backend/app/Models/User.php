@@ -48,6 +48,8 @@ class User extends Authenticatable
         ];
     }
 
+    protected $with = ["roles"];
+
     public function commandes()
     {
         return $this->hasMany(Commande::class);

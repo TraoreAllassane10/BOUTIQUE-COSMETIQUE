@@ -12,26 +12,91 @@ import Produit from "./pages/produit/Produit";
 import EditCategorie from "./pages/categorie/EditCategorie";
 import EditProduit from "./pages/produit/EditProduit";
 import ShowProduit from "./pages/produit/ShowProduit";
+import AdminRoutes from "./components/AdminRoutes";
 
 function App() {
   return (
-    <ProtectedRoute>
-      <Router>
-        <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/categorie" element={<Categorie />} />
-          <Route path="/categorie/:id" element={<EditCategorie />} />
-          <Route path="/produit" element={<Produit />} />
-          <Route path="/produit/:id" element={<EditProduit />} />
-          <Route path="/produit/:id/show" element={<ShowProduit />} />
-          <Route path="/client" element={<Client />} />
-          <Route path="/commande" element={<Commande />} />
-          <Route path="/paramettre" element={<Parametre />} />
-        </Routes>
-      </Router>
-    </ProtectedRoute>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <AdminRoutes>
+                <Dashboard />
+              </AdminRoutes>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/categorie"
+          element={
+            <ProtectedRoute>
+              <Categorie />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/categorie/:id"
+          element={
+            <ProtectedRoute>
+              <EditCategorie />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/produit"
+          element={
+            <ProtectedRoute>
+              <Produit />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/produit/:id"
+          element={
+            <ProtectedRoute>
+              <EditProduit />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/produit/:id/show"
+          element={
+            <ProtectedRoute>
+              <ShowProduit />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/client"
+          element={
+            <ProtectedRoute>
+              <Client />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/commande"
+          element={
+            <ProtectedRoute>
+              <Commande />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/paramettre"
+          element={
+            <ProtectedRoute>
+              <Parametre />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </Router>
   );
 }
 
