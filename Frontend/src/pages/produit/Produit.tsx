@@ -1,4 +1,9 @@
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
 import DashboardLayout from "@/layouts/DashboardLayout";
 import {
   Table,
@@ -90,7 +95,6 @@ const formSchema = z.object({
 type FormData = z.infer<typeof formSchema>;
 
 const Produit = () => {
-
   const navigate = useNavigate();
 
   // State de recherche
@@ -98,13 +102,16 @@ const Produit = () => {
   const [categorieFiltre, setCategorieFiltre] = useState("0");
 
   // Chargement des produits (La data changement lorsque nous mettons search à jour)
-  const { data, isLoading } = useGetProduitsQuery({ search, categorie: categorieFiltre });
+  const { data, isLoading } = useGetProduitsQuery({
+    search,
+    categorie: categorieFiltre,
+  });
 
   // Chargement des categories depuis L'API
   const { data: categorieData } = useGetCategoriesQuery(undefined);
 
   // Mutayion de suppression de produit
-  const [deleteProduit, { error: deleteError }] = useDeleteProduitMutation();
+  const [deleteProduit] = useDeleteProduitMutation();
 
   // Mutation pour creer un produit
   const [createProduit, { error: createError }] = useCreateProduitMutation();
@@ -158,14 +165,12 @@ const Produit = () => {
   const handleDelete = async (id: number) => {
     await deleteProduit(id).unwrap();
 
-    if (!deleteError) {
-      navigate(0);
-      toast.success("Produit supprimé avec succès !");
-    }
+    toast.success("Produit supprimé avec succès !");
+
+    navigate(0)
   };
 
- 
-   /* SYSTEME DE PAGINATION */
+  /* SYSTEME DE PAGINATION */
   // La page courante
   const [currentPage, setCurrenPage] = useState(1);
 
@@ -359,9 +364,14 @@ const Produit = () => {
           </CardContent>
 
           <CardFooter>
-           {
-            data?.data &&  <PaginationBar data={produitActuel} currentPage={currentPage} setCurrentPage={setCurrenPage} totalPage={totalPage} />
-           }
+            {data?.data && (
+              <PaginationBar
+                data={produitActuel}
+                currentPage={currentPage}
+                setCurrentPage={setCurrenPage}
+                totalPage={totalPage}
+              />
+            )}
           </CardFooter>
         </Card>
       </div>

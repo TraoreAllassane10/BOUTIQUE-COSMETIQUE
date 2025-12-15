@@ -26,7 +26,7 @@ const AdminRoutes = ({ children }: { children: React.ReactNode }) => {
   });
 
   if (!isAdmin) {
-    return <Navigate to="/acceuil" replace />;
+    return <Navigate to="/" replace />;
   }
 
   return children;
