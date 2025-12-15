@@ -83,7 +83,7 @@ const ShowProduit = () => {
 
                     <div className="grid grid-cols-2 gap-4 mt-4">
                       <Link
-                        to={`/produit/${data?.data.id}`}
+                        to={`/admin/produit/${data?.data.id}`}
                         className="bg-blue-500 text-center text-white p-1 rounded hover:bg-blue-700 transition"
                       >
                         Modifier

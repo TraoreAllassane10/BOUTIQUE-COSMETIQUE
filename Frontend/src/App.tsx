@@ -13,13 +13,13 @@ import EditCategorie from "./pages/categorie/EditCategorie";
 import EditProduit from "./pages/produit/EditProduit";
 import ShowProduit from "./pages/produit/ShowProduit";
 import AdminRoutes from "./components/AdminRoutes";
-// import Home from "./pages/Home"
+import Home from "./pages/Home"
 
 function App() {
   return (
     <Router>
       <Routes>
-        {/* <Route path="/home" element={<Home />} /> */}
+        <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
 
