@@ -13,12 +13,14 @@ import EditCategorie from "./pages/categorie/EditCategorie";
 import EditProduit from "./pages/produit/EditProduit";
 import ShowProduit from "./pages/produit/ShowProduit";
 import AdminRoutes from "./components/AdminRoutes";
+// import Home from "./pages/Home"
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Login />} />
+        {/* <Route path="/home" element={<Home />} /> */}
+        <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
 
         <Route
@@ -48,7 +50,7 @@ function App() {
           }
         />
         <Route
-          path="/produit"
+          path="/admin/produit"
           element={
             <ProtectedRoute>
               <Produit />
@@ -56,7 +58,7 @@ function App() {
           }
         />
         <Route
-          path="/produit/:id"
+          path="/admin/produit/:id"
           element={
             <ProtectedRoute>
               <EditProduit />
@@ -64,7 +66,7 @@ function App() {
           }
         />
         <Route
-          path="/produit/:id/show"
+          path="/admin/produit/:id/show"
           element={
             <ProtectedRoute>
               <ShowProduit />

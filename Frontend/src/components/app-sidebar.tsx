@@ -29,7 +29,7 @@ const items = [
   },
   {
     title: "Produits",
-    url: "/produit",
+    url: "/admin/produit",
     icon: Container,
   },
   {

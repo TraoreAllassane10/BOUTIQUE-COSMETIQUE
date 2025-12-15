@@ -336,10 +336,10 @@ const Produit = () => {
                       <TableCell>{produit.stock}</TableCell>
                       <TableCell>{produit.category?.nom}</TableCell>
                       <TableCell className="flex gap-2">
-                        <Link to={`/produit/${produit.id}/show`}>
+                        <Link to={`/admin/produit/${produit.id}/show`}>
                           <Eye className="text-yellow-500" />
                         </Link>
-                        <Link to={`/produit/${produit.id}`}>
+                        <Link to={`/admin/produit/${produit.id}`}>
                           <Edit className="text-blue-500" />
                         </Link>
                         <a

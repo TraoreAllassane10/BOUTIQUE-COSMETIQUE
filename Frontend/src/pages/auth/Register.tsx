@@ -130,7 +130,7 @@ const Register = () => {
 
         <span className="mt-20 text-sm text-gray-500">
           Vous n'avez pas de compte ?{" "}
-          <a href="/" className="text-primary">
+          <a href="/login" className="text-primary">
             connectez-vous
           </a>
         </span>
