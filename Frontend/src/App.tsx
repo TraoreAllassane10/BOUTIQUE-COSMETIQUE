@@ -13,7 +13,8 @@ import EditCategorie from "./pages/categorie/EditCategorie";
 import EditProduit from "./pages/produit/EditProduit";
 import ShowProduit from "./pages/produit/ShowProduit";
 import AdminRoutes from "./components/AdminRoutes";
-import Home from "./pages/Home"
+import Home from "./pages/Home";
+import ProductPage from "./pages/ProductPage";
 
 function App() {
   return (
@@ -23,6 +24,10 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
 
+        {/* Client */}
+        <Route path="/produits" element={<ProductPage />} />
+
+        {/* Admin */}
         <Route
           path="/dashboard"
           element={

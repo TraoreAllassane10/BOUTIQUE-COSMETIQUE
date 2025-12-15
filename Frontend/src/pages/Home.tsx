@@ -13,6 +13,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { useGetCategoriesQuery } from "@/store/api/categorieApi";
 import { useGetProduitsQuery } from "@/store/api/produitApi";
+import NavBar from "@/components/NavBar";
+import Banniere from "@/components/Banniere";
+import { Link } from "react-router-dom";
 
 interface Categorie {
   id: number;
@@ -34,7 +37,6 @@ interface Produit {
 
 export default function Home() {
   const [cartCount, setCartCount] = useState(0);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [favorites, setFavorites] = useState(new Set());
 
   const { data: categoryData } = useGetCategoriesQuery(undefined);
@@ -42,6 +44,8 @@ export default function Home() {
     search: "",
     categorie: "",
   });
+
+  const products = productData?.data?.slice(0, 6)
 
   const addToCart = () => {
     setCartCount(cartCount + 1);
@@ -62,96 +66,10 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-white shadow-sm sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            {/* Logo */}
-            <div className="flex items-center">
-              <h1 className="text-2xl font-bold text-gray-900">ShopCosm</h1>
-            </div>
-
-            {/* Navigation Desktop */}
-            <nav className="hidden md:flex space-x-8">
-              {categoryData?.data?.map((category: Categorie) => (
-                <a
-                  key={category.id}
-                  href="#"
-                  className="text-gray-700 hover:text-gray-900 transition-colors"
-                >
-                  {category.nom}
-                </a>
-              ))}
-            </nav>
-
-            {/* Actions */}
-            <div className="flex items-center space-x-4">
-              <button className="hidden sm:flex text-gray-700 hover:text-gray-900">
-                <Search className="w-5 h-5" />
-              </button>
-              <button className="text-gray-700 hover:text-gray-900">
-                <User className="w-5 h-5" />
-              </button>
-              <button className="text-gray-700 hover:text-gray-900">
-                <Heart className="w-5 h-5" />
-              </button>
-              <button className="relative text-gray-700 hover:text-gray-900">
-                <ShoppingCart className="w-5 h-5" />
-                {cartCount > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                    {cartCount}
-                  </span>
-                )}
-              </button>
-              <button
-                className="md:hidden text-gray-700"
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              >
-                {mobileMenuOpen ? (
-                  <X className="w-6 h-6" />
-                ) : (
-                  <Menu className="w-6 h-6" />
-                )}
-              </button>
-            </div>
-          </div>
-
-          {/* Mobile Menu */}
-          {mobileMenuOpen && (
-            <div className="md:hidden py-4 border-t">
-              {categoryData?.data.map((category: Categorie) => (
-                <a
-                  key={category.id}
-                  href="#"
-                  className="block py-2 text-gray-700 hover:text-gray-900"
-                >
-                  {category.nom}
-                </a>
-              ))}
-            </div>
-          )}
-        </div>
-      </header>
+      <NavBar />
 
       {/* Bannière Hero */}
-      <section className="relative bg-gradient-to-r from-purple-600 to-blue-600 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-          <div className="max-w-2xl">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">
-              Boutique Cosmétique
-            </h2>
-            <p className="text-xl mb-8 text-purple-100">
-              Jusqu'à -50% sur une sélection de produits. Offre limitée !
-            </p>
-            <Button
-              size="lg"
-              className="bg-white text-purple-600 hover:bg-gray-100 cursor-pointer"
-            >
-              Découvrir nos produits
-              <ChevronRight className="ml-2 w-4 h-4" />
-            </Button>
-          </div>
-        </div>
-      </section>
+      <Banniere />
 
       {/* Bannière Avantages */}
       <section className="bg-white py-8 border-b">
@@ -184,17 +102,17 @@ export default function Home() {
           <h2 className="text-3xl font-bold text-gray-900">
             Produits Populaires
           </h2>
-          <a
-            href="#"
+          <Link
+            to="/produits"
             className="text-purple-600 hover:text-purple-700 flex items-center"
           >
             Voir tout
             <ChevronRight className="w-4 h-4 ml-1" />
-          </a>
+          </Link>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {productData?.data.map((product: Produit) => (
+          {products?.map((product: Produit) => (
             <Card
               key={product.id}
               className="group hover:shadow-lg transition-shadow duration-300"
