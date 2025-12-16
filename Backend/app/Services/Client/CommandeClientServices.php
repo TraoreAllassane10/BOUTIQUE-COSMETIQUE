@@ -6,14 +6,19 @@ use Exception;
 use Carbon\Carbon;
 use App\Models\Commande;
 use App\Notifications\CommandeClientRegisteredNotification;
+use Illuminate\Support\Facades\Validator;
 
 class CommandeClientServices
 {
     public function process($request)
     {
         try {
+            Validator::make($request->all(), [
+                'panier' => 'required|array|min:1',
+                'montant' => 'required|numeric|min:0',
+            ])->validate();
 
-            $panier = $request->panier; // un tableau constitué des ID des produits à commander. Ex : [1, 2, 3]
+            $panier = $request->panier; // un tableau constitué des ID et quantités des produits à commander. Ex : [1, 2, 3]
             $montant = $request->montant;
 
             $commande = Commande::create([
@@ -24,8 +29,8 @@ class CommandeClientServices
             ]);
 
             foreach ($panier as $item) {
-                $commande->produits()->attach($item, [
-                    "quantite" => 1
+                $commande->produits()->attach($item["id"], [
+                    "quantite" => $item["quantite"]
                 ]);
             }
 
@@ -61,9 +66,8 @@ class CommandeClientServices
             return response()->json([
                 "success" => true,
                 'message' => 'Liste de mes commandes',
-                'data' => $commandes    
+                'data' => $commandes
             ]);
-
         } catch (Exception $e) {
             return response()->json([
                 'success' => false,

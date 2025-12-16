@@ -18,9 +18,16 @@ import { Badge } from "@/components/ui/badge";
 import NavBar from "@/components/NavBar";
 import { useDispatch, useSelector } from "react-redux";
 import { selectProducts } from "../store/slices/cartSlice";
-import { Link } from "react-router-dom";
-import { updateQuantityProduct, removeCart, addCart } from "../store/slices/cartSlice";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  updateQuantityProduct,
+  removeCart,
+  addCart,
+  clearCart
+} from "../store/slices/cartSlice";
 import { useGetProduitsQuery } from "@/store/api/produitApi";
+import { useCreateCommandeMutation } from "@/store/api/commandeApi";
+import toast from "react-hot-toast";
 
 interface Product {
   id: number;
@@ -33,9 +40,13 @@ interface Product {
 export default function Panier() {
   const [promoCode, setPromoCode] = useState("");
   const [promoApplied, setPromoApplied] = useState(false);
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const {data: productsData} = useGetProduitsQuery({search: "", categorie: ""})
+  const { data: productsData } = useGetProduitsQuery({
+    search: "",
+    categorie: "",
+  });
 
   // Recuperation du state global products
   const products: Product[] = useSelector(selectProducts);
@@ -83,10 +94,47 @@ export default function Panier() {
     return subtotal - discount + shipping;
   }, [subtotal, discount, shipping]);
 
+  // Recommandation de 3 produits
   const recommendedProducts = productsData?.data.slice(0, 3);
 
+  // Ajout d'un produit recommandé au panier
   const addToCart = (id: number, image: string, nom: string, prix: number) => {
     dispatch(addCart({ id, image, nom, prix }));
+  };
+
+  // PASSATION DE LA COMMANDE
+  const [createCommande, { error: commandeError }] =
+    useCreateCommandeMutation();
+
+  const handleCommande = async () => {
+
+    // Verifie si le panier est vide
+    if (!total && total <= 0) {
+      toast.error("Veuillez aujouté au moins un produit dans le panier");
+      return;
+    }
+
+    // Recuperation des id et quantité des produits du panier
+    const panier = products.map((product) => {
+      return { id: product.id, quantite: product.quantite };
+    });
+
+    // Creation d'une nouvelle commande
+    await createCommande({panier, montant: total}).unwrap();
+
+    // Si une erreur survient
+    if (commandeError)
+    {
+      toast.error("Une erreur est survenue lors de la création d'une commande");
+      return ;
+    }
+
+    // Vidange du panier
+    dispatch(clearCart());
+
+    toast.success("Commande enregistrée avec succès !");
+    
+    navigate("/");
   };
 
   return (
@@ -327,7 +375,10 @@ export default function Panier() {
                   </div>
 
                   {/* Boutons */}
-                  <Button className="w-full bg-purple-600 hover:bg-purple-700 py-6 text-lg">
+                  <Button
+                    onClick={handleCommande}
+                    className="w-full bg-purple-600 hover:bg-purple-700 py-6 text-lg cursor-pointer"
+                  >
                     <Lock className="w-5 h-5 mr-2" />
                     Passer la commande
                   </Button>
