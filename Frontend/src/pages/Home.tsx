@@ -1,14 +1,5 @@
 import { useState } from "react";
-import {
-  ShoppingCart,
-  Search,
-  Menu,
-  X,
-  Heart,
-  Star,
-  ChevronRight,
-  User,
-} from "lucide-react";
+import { Heart, Star, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { useGetCategoriesQuery } from "@/store/api/categorieApi";
@@ -16,6 +7,8 @@ import { useGetProduitsQuery } from "@/store/api/produitApi";
 import NavBar from "@/components/NavBar";
 import Banniere from "@/components/Banniere";
 import { Link } from "react-router-dom";
+import { addCart } from "../store/slices/cartSlice";
+import { useDispatch } from "react-redux";
 
 interface Categorie {
   id: number;
@@ -36,8 +29,9 @@ interface Produit {
 }
 
 export default function Home() {
-  const [cartCount, setCartCount] = useState(0);
   const [favorites, setFavorites] = useState(new Set());
+
+  const dispatch = useDispatch();
 
   const { data: categoryData } = useGetCategoriesQuery(undefined);
   const { data: productData } = useGetProduitsQuery({
@@ -45,10 +39,10 @@ export default function Home() {
     categorie: "",
   });
 
-  const products = productData?.data?.slice(0, 6)
+  const products = productData?.data?.slice(0, 6);
 
-  const addToCart = () => {
-    setCartCount(cartCount + 1);
+  const addToCart = (id: number, image: string, nom: string, prix: number) => {
+    dispatch(addCart({ id, image, nom, prix }));
   };
 
   const toggleFavorite = (id: number) => {
@@ -124,11 +118,7 @@ export default function Home() {
                     alt={product.nom}
                     className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
                   />
-                  {/* {product.badge && (
-                    <Badge className="absolute top-4 left-4 bg-red-500">
-                      {product.badge}
-                    </Badge>
-                  )} */}
+
                   <button
                     onClick={() => toggleFavorite(product.id)}
                     className="absolute top-4 right-4 bg-white rounded-full p-2 shadow-md hover:bg-gray-100 transition-colors"
@@ -157,28 +147,27 @@ export default function Home() {
                         />
                       ))}
                     </div>
-                    {/* <span className="text-sm text-gray-600 ml-2">
-                      ({product.reviews})
-                    </span> */}
                   </div>
                   <div className="flex items-center justify-between">
                     <div>
                       <span className="text-2xl font-bold text-gray-900">
                         {product.prix} fcfa
                       </span>
-                      {/* {product.originalPrice && (
-                        <span className="text-sm text-gray-500 line-through ml-2">
-                          {product.originalPrice}€
-                        </span>
-                      )} */}
                     </div>
                   </div>
                 </div>
               </CardContent>
               <CardFooter className="p-4 pt-0">
                 <Button
-                  onClick={addToCart}
-                  className="w-full bg-purple-600 hover:bg-purple-700"
+                  onClick={() =>
+                    addToCart(
+                      product.id,
+                      product.image,
+                      product.nom,
+                      product.prix
+                    )
+                  }
+                  className="w-full bg-purple-600 hover:bg-purple-700 cursor-pointer"
                 >
                   Ajouter au panier
                 </Button>

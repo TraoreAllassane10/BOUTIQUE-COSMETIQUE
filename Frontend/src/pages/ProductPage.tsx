@@ -8,6 +8,8 @@ import NavBar from "@/components/NavBar";
 import { Link } from "react-router-dom";
 import { useGetCategoriesQuery } from "@/store/api/categorieApi";
 import { useGetProduitsQuery } from "@/store/api/produitApi";
+import { addCart } from "../store/slices/cartSlice";
+import { useDispatch } from "react-redux";
 
 interface Produit {
   id: number;
@@ -28,13 +30,12 @@ interface Category {
 }
 
 export default function ProductPage() {
-  const [cartCount, setCartCount] = useState(0);
   const [favorites, setFavorites] = useState(new Set());
   const [viewMode, setViewMode] = useState("grid");
   const [priceRange, setPriceRange] = useState([0, 100000]);
   const [selectedCategories, setSelectedCategories] = useState(new Set());
-  const [sortBy, setSortBy] = useState("popular");
   const [showFilters, setShowFilters] = useState(false);
+  const dispatch = useDispatch();
 
   const { data: productData } = useGetProduitsQuery({
     search: "",
@@ -54,8 +55,8 @@ export default function ProductPage() {
     return matchesPrice && matchesCategory;
   });
 
-  const addToCart = () => {
-    setCartCount(cartCount + 1);
+  const addToCart = (id: number, image: string, nom: string, prix: number) => {
+    dispatch(addCart({ id, image, nom, prix }));
   };
 
   const toggleFavorite = (id: number) => {
@@ -196,17 +197,6 @@ export default function ProductPage() {
                 </div>
 
                 <div className="flex items-center gap-4 w-full sm:w-auto">
-                  {/* Tri */}
-                  <select
-                    value={sortBy}
-                    onChange={(e) => setSortBy(e.target.value)}
-                    className="flex-1 sm:flex-none px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-                  >
-                    <option value="popular">Plus populaire</option>
-                    <option value="price-asc">Prix croissant</option>
-                    <option value="price-desc">Prix décroissant</option>
-                  </select>
-
                   {/* Vue */}
                   <div className="hidden sm:flex gap-2">
                     <button
@@ -320,8 +310,15 @@ export default function ProductPage() {
 
                       {viewMode === "list" && (
                         <Button
-                          onClick={addToCart}
-                          className="w-full bg-purple-600 hover:bg-purple-700 mt-4"
+                          onClick={() =>
+                            addToCart(
+                              product.id,
+                              product.image,
+                              product.nom,
+                              product.prix
+                            )
+                          }
+                          className="w-full bg-purple-600 hover:bg-purple-700 mt-4 cursor-pointer"
                         >
                           Ajouter au panier
                         </Button>
@@ -332,8 +329,15 @@ export default function ProductPage() {
                   {viewMode === "grid" && (
                     <CardFooter className="p-4 pt-0">
                       <Button
-                        onClick={addToCart}
-                        className="w-full bg-purple-600 hover:bg-purple-700"
+                        onClick={() =>
+                          addToCart(
+                            product.id,
+                            product.image,
+                            product.nom,
+                            product.prix
+                          )
+                        }
+                        className="w-full bg-purple-600 hover:bg-purple-700 cursor-pointer"
                       >
                         Ajouter au panier
                       </Button>
