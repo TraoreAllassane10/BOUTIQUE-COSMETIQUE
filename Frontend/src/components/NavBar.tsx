@@ -1,6 +1,9 @@
 import { useGetCategoriesQuery } from "@/store/api/categorieApi";
 import { Heart, Menu, Search, ShoppingCart, User, X } from "lucide-react";
 import { useState } from "react";
+import { useSelector } from "react-redux";
+import { selectCartCount } from "../store/slices/cartSlice";
+import { Link } from "react-router-dom";
 
 interface Categorie {
   id: string;
@@ -8,19 +11,23 @@ interface Categorie {
 }
 
 const NavBar = () => {
-    const [cartCount, setCartCount] = useState(0);
-    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  //State global qui contient le nombre de produit dans le panier
+  const cartCount = useSelector(selectCartCount);
+
   // Chargement des categories depuis L'API
   const { data: categoryData } = useGetCategoriesQuery(undefined);
-  
+
   return (
     <header className="bg-white shadow-sm sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex items-center">
-            <h1 className="text-2xl font-bold text-gray-900">ShopCosm</h1>
+            <Link to="/">
+              <h1 className="text-2xl font-bold text-gray-900">ShopCosm</h1>
+            </Link>
           </div>
 
           {/* Navigation Desktop */}
@@ -47,14 +54,14 @@ const NavBar = () => {
             <button className="text-gray-700 hover:text-gray-900">
               <Heart className="w-5 h-5" />
             </button>
-            <button className="relative text-gray-700 hover:text-gray-900">
+            <Link to="/panier" className="relative text-gray-700 hover:text-gray-900">
               <ShoppingCart className="w-5 h-5" />
               {cartCount > 0 && (
                 <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                   {cartCount}
                 </span>
               )}
-            </button>
+            </Link>
             <button
               className="md:hidden text-gray-700"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}

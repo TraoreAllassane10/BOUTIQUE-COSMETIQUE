@@ -15,6 +15,7 @@ import ShowProduit from "./pages/produit/ShowProduit";
 import AdminRoutes from "./components/AdminRoutes";
 import Home from "./pages/Home";
 import ProductPage from "./pages/ProductPage";
+import Panier from "./pages/Panier";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
 
         {/* Client */}
         <Route path="/produits" element={<ProductPage />} />
+        <Route path="/panier" element={<Panier />} />
 
         {/* Admin */}
         <Route
