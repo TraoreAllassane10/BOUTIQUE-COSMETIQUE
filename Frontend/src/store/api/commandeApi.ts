@@ -19,7 +19,15 @@ export const commandeApi = createApi({
         body: commandeData,
       }),
     }),
+
+    // Suppression d'une commande
+    deleteCommande: builder.mutation({
+        query: (id) => ({
+            url: `/admin/commandes/${id}`,
+            method: "DELETE",
+        })
+    })
   }),
 });
 
-export const { useCreateCommandeMutation, useGetCommandesQuery } = commandeApi;
+export const { useCreateCommandeMutation, useGetCommandesQuery, useDeleteCommandeMutation } = commandeApi;

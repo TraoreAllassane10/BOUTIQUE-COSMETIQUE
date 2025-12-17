@@ -25,9 +25,14 @@ import {
 } from "@/components/ui/select";
 import { useState } from "react";
 
-import { useGetCommandesQuery } from "@/store/api/commandeApi";
+import {
+  useDeleteCommandeMutation,
+  useGetCommandesQuery,
+} from "@/store/api/commandeApi";
 import { DonneesParPage } from "@/utlis/pagination";
 import PaginationBar from "@/components/PaginationBar";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 interface Commande {
   id: number;
@@ -35,13 +40,14 @@ interface Commande {
   statut: string;
   montant: number;
   user: {
-    id: number,
+    id: number;
     name: string;
-  }
+  };
 }
 
 const Commande = () => {
   const { data: commandeData } = useGetCommandesQuery(undefined);
+  const navigate = useNavigate();
 
   // SYSTEME DE PAGINATION
   // La page courante
@@ -52,6 +58,23 @@ const Commande = () => {
     commandeData?.data,
     currentPage
   );
+
+  // Suppression d'une commande
+  const [deleteCommande, { error: errorDeleteCommande }] =
+    useDeleteCommandeMutation();
+
+  const handleDelete = async (id: number) => {
+    await deleteCommande(id).unwrap;
+
+    if (errorDeleteCommande) {
+      toast.error("Erreur survenue lors de la création d'une commande");
+      return;
+    }
+
+    toast.success("Commande supprimée avec succès !");
+
+    navigate("/commande");
+  };
 
   return (
     <DashboardLayout>
@@ -140,9 +163,12 @@ const Commande = () => {
                       <a href="">
                         <Edit />
                       </a>
-                      <a href="">
+                      <button
+                        onClick={() => handleDelete(commande.id)}
+                        className="cursor-pointer text-red-500"
+                      >
                         <Trash />
-                      </a>
+                      </button>
                     </TableCell>
                   </TableRow>
                 ))}
