@@ -4,7 +4,7 @@ import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import Dashboard from "./pages/Dashboard";
 import Client from "./pages/Client";
-import Commande from "./pages/Commande";
+import Commande from "./pages/commande/Commande";
 import Parametre from "./pages/Parametre";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Categorie from "./pages/categorie/Categorie";
