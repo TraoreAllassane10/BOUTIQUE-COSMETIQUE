@@ -21,12 +21,26 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <Home />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
 
         {/* Client */}
-        <Route path="/produits" element={<ProductPage />} />
+        <Route
+          path="/produits"
+          element={
+            <ProtectedRoute>
+              <ProductPage />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/panier" element={<Panier />} />
 
         {/* Admin */}

@@ -21,13 +21,13 @@ Route::controller(ProductClientController::class)->group(function () {
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/user', function (Request $request) {
-        return $request->user();
+        return response()->json($request->user());
     });
 
     Route::post('/commandes/process', [CommandeClientController::class, 'process'])->name("commandes.process");
     Route::get('/commandes/historique', [CommandeClientController::class, 'historique'])->name("commandes.historique");
 
-    Route::middleware("manager")->group(function () {
+    // Route::middleware("manager")->group(function () {
         // Routes de gestion des categories
         Route::get('/admin/categories', [CategoryController::class, "index"])->name('admin.categories');
         Route::get('/admin/categories/{category}', [CategoryController::class, "show"])->name('admin.categories.show');
@@ -50,7 +50,7 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::put('/admin/commandes/{commande}/status', 'updateStatus')->name('commandes.updateStatus');
             Route::delete('/admin/commandes/{commande}', 'delete')->name('commandes.delete');
         });
-    });
+    // });
 
     // Visualisation des commandes à traitée (en cours) par les admins et les preparateurs
     Route::middleware('preparateur')->group(function () {
