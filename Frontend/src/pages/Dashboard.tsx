@@ -52,13 +52,12 @@ const Dashboard = () => {
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            <CommandeChart/>
-            <DernierClient/>
+            <CommandeChart />
+            <DernierClient />
           </div>
 
-
           {/* Dernières commandes */}
-          <DerniereCommande/>
+          <DerniereCommande />
         </div>
       </div>
     </DashboardLayout>

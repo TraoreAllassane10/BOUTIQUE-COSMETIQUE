@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Heart, Star, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
@@ -6,7 +6,7 @@ import { useGetCategoriesQuery } from "@/store/api/categorieApi";
 import { useGetProduitsQuery } from "@/store/api/produitApi";
 import NavBar from "@/components/NavBar";
 import Banniere from "@/components/Banniere";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { addCart } from "../store/slices/cartSlice";
 import { useDispatch } from "react-redux";
 
@@ -32,6 +32,7 @@ export default function Home() {
   const [favorites, setFavorites] = useState(new Set());
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const { data: categoryData } = useGetCategoriesQuery(undefined);
   const { data: productData } = useGetProduitsQuery({
@@ -56,6 +57,15 @@ export default function Home() {
       return newFavorites;
     });
   };
+
+  // Rediriger l'utilisateur sur la page de connexion s'il n'est pas connecté
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      navigate("/login");
+    }
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -190,7 +200,7 @@ export default function Home() {
             <div>
               <h4 className="font-semibold mb-4">Catégories</h4>
               <ul className="space-y-2 text-gray-400">
-                {categoryData?.data.map((category: Categorie) => (
+                {categoryData?.data?.map((category: Categorie) => (
                   <li key={category.id}>
                     <a href="#" className="hover:text-white">
                       {category.nom}

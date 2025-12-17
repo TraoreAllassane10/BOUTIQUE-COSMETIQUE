@@ -4,6 +4,7 @@ import cartReducer from "./slices/cartSlice";
 import { authApi } from './api/authApi';
 import { categorieApi } from './api/categorieApi';
 import { produitApi } from './api/produitApi';
+import { commandeApi } from './api/commandeApi';
 
 
 export const store = configureStore({
@@ -13,10 +14,11 @@ export const store = configureStore({
         [authApi.reducerPath]: authApi.reducer,
         [categorieApi.reducerPath]: categorieApi.reducer,
         [produitApi.reducerPath]: produitApi.reducer,
+        [commandeApi.reducerPath]: commandeApi.reducer
     },
 
     middleware: (getDefaultMiddleware) => {
-        return getDefaultMiddleware().concat(authApi.middleware, categorieApi.middleware, produitApi.middleware);
+        return getDefaultMiddleware().concat(authApi.middleware, categorieApi.middleware, produitApi.middleware, commandeApi.middleware);
     }
 })
 
