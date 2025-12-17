@@ -18,11 +18,11 @@ const items = [
     url: "/dashboard",
     icon: Home,
   },
-  {
-    title: "Clients",
-    url: "/client",
-    icon: Users,
-  },
+  // {
+  //   title: "Clients",
+  //   url: "/client",
+  //   icon: Users,
+  // },
   {
     title: "Catégories",
     url: "/categorie",

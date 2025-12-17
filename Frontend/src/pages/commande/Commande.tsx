@@ -157,12 +157,10 @@ const Commande = () => {
                     </TableCell>
 
                     <TableCell className="flex gap-2">
-                      <Link to={`/commande/${commande.id}/show`}>
+                      <Link to={`/commande/${commande.id}/show`} className="cursor-pointer text-yellow-500">
                         <Eye />
                       </Link>
-                      <a href="">
-                        <Edit />
-                      </a>
+              
                       <button
                         onClick={() => handleDelete(commande.id)}
                         className="cursor-pointer text-red-500"

@@ -14,7 +14,7 @@ class CommandeServices
     {
         try {
 
-            $commandes = Commande::with("user")->get();
+            $commandes = Commande::with("user")->latest()->get();
 
             return response()->json([
                 'success' => true,

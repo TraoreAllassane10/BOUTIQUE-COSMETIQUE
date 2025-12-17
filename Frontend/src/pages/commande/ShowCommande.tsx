@@ -6,6 +6,16 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Calendar, User, Wallet, Package } from "lucide-react";
 
+interface Produit {
+    id: number;
+    nom: string;
+    prix: number;
+    image: string;
+    pivot: {
+        quantite: number;
+    }
+}
+
 const ShowCommande = () => {
   const { id } = useParams();
   const { data, isLoading } = useGetCommandeByIdQuery(id);
@@ -77,7 +87,7 @@ const ShowCommande = () => {
             <CardTitle>Produits commandés</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            {commande?.produits.map((produit) => (
+            {commande?.produits.map((produit: Produit) => (
               <div
                 key={produit.id}
                 className="flex items-center gap-4 p-4 border rounded-xl hover:bg-muted/40 transition"
