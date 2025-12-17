@@ -7,10 +7,17 @@ import {
   TableHeader,
   TableRow,
 } from "./ui/table";
-import { Listeclient } from "@/database/data";
+import { useGetDataDashboardQuery } from "@/store/api/dashboardApi";
+
+interface Client {
+  id: number;
+  name: string;
+  email: string;
+}
 
 const DernierClient = () => {
-  const clients = Listeclient.slice(Listeclient.length - 5, Listeclient.length);
+  const { data } = useGetDataDashboardQuery(undefined);
+
   return (
     <Card>
       <CardHeader className="flex justify-between">
@@ -22,15 +29,13 @@ const DernierClient = () => {
             <TableRow>
               <TableHead className="w-[100px]">Nom</TableHead>
               <TableHead>Email</TableHead>
-              <TableHead>Telephone</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {clients?.map((client) => (
+            {data?.derniersClients.map((client: Client) => (
               <TableRow key={client.id} className="text-gray-500">
-                <TableCell className="font-medium">{client.nom}</TableCell>
+                <TableCell className="font-medium">{client.name}</TableCell>
                 <TableCell>{client.email}</TableCell>
-                <TableCell>{client.telephone}</TableCell>
               </TableRow>
             ))}
           </TableBody>

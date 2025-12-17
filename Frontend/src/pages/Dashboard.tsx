@@ -4,9 +4,13 @@ import DerniereCommande from "@/components/DerniereCommande";
 import StatsCard from "@/components/StatsCard";
 
 import DashboardLayout from "@/layouts/DashboardLayout";
+import { useGetDataDashboardQuery } from "@/store/api/dashboardApi";
 import { Euro, ShoppingCart, Users } from "lucide-react";
 
 const Dashboard = () => {
+  const {data}  = useGetDataDashboardQuery(undefined);
+
+  console.log(data)
   return (
     <DashboardLayout>
       <div className="p-6">
@@ -23,28 +27,28 @@ const Dashboard = () => {
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             <StatsCard
               title="Revenus journalier"
-              value="50.000 fcfa"
+              value={`${data?.revenusJournalier.toLocaleString("XOF")} fcfa`}
               change="5.04%"
               icon={Euro}
               trend="up"
             />
             <StatsCard
               title="Revenus totaux"
-              value="1.000.000 fcfa"
+              value={`${data?.totalRevenus.toLocaleString("XOF")} fcfa`}
               change="20.1%"
               icon={Euro}
               trend="up"
             />
             <StatsCard
               title="Commandes"
-              value="325"
+              value={data?.nombreCommande}
               change="15.3%"
               icon={ShoppingCart}
               trend="up"
             />
             <StatsCard
               title="Clients"
-              value="125"
+              value={data?.nombreClient}
               change="12.5%"
               icon={Users}
               trend="down"

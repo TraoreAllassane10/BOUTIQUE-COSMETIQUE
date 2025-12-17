@@ -8,27 +8,16 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import { useGetDataDashboardQuery } from "@/store/api/dashboardApi";
 
 const CommandeChart = () => {
-  const data = [
-    { mois: "Jan", total: 300000 },
-    { mois: "Fév", total: 370000 },
-    { mois: "Mar", total: 390000 },
-    { mois: "Avr", total: 150000 },
-    { mois: "Mai", total: 520000 },
-    { mois: "Juin", total: 500000 },
-    { mois: "Juil", total: 650000 },
-    { mois: "Août", total: 800000 },
-    { mois: "Sep", total: 850000 },
-    { mois: "Oct", total: 900000 },
-    { mois: "Nov", total: 950000 },
-    { mois: "Déc", total: 1000000 },
-  ];
+  const { data } = useGetDataDashboardQuery(undefined);
+
   return (
     <Card className="w-full p-6">
       <CardContent className="h-[400px]">
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={data}>
+          <LineChart data={data?.chartData}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="mois" />
             <YAxis />

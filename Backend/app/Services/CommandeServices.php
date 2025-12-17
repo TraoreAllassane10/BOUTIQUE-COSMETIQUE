@@ -14,11 +14,31 @@ class CommandeServices
     {
         try {
 
-            $commandes = Commande::with("user")->get();
+            $commandes = Commande::with("user")->latest()->get();
 
             return response()->json([
                 'success' => true,
                 'message' => 'La liste des toutes les commandes',
+                'data' => $commandes
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur survenue au niveau du serveur',
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
+
+    public function find($commande)
+    {
+        try {
+
+            $commandes = Commande::find($commande);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Une commande trouvé',
                 'data' => $commandes
             ]);
         } catch (Exception $e) {
@@ -92,5 +112,4 @@ class CommandeServices
             ]);
         }
     }
-    
 }

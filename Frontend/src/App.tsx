@@ -4,7 +4,7 @@ import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import Dashboard from "./pages/Dashboard";
 import Client from "./pages/Client";
-import Commande from "./pages/Commande";
+import Commande from "./pages/commande/Commande";
 import Parametre from "./pages/Parametre";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Categorie from "./pages/categorie/Categorie";
@@ -16,6 +16,7 @@ import AdminRoutes from "./components/AdminRoutes";
 import Home from "./pages/Home";
 import ProductPage from "./pages/ProductPage";
 import Panier from "./pages/Panier";
+import ShowCommande from "./pages/commande/ShowCommande";
 
 function App() {
   return (
@@ -107,6 +108,14 @@ function App() {
           element={
             <ProtectedRoute>
               <Commande />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/commande/:id/show"
+          element={
+            <ProtectedRoute>
+              <ShowCommande />
             </ProtectedRoute>
           }
         />
