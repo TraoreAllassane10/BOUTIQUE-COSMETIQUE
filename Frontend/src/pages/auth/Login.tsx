@@ -154,6 +154,12 @@ const Login = () => {
             <img src={insta} alt="" className="w-10 h-10" />
           </a>
         </div>
+
+        <div>
+          Administrateur
+          <p>Email : allassanetraore@gmail.com</p>
+          <p>Password : 1234</p>
+        </div>
       </div>
     </AuthLayout>
   );

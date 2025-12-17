@@ -16,6 +16,7 @@ import AdminRoutes from "./components/AdminRoutes";
 import Home from "./pages/Home";
 import ProductPage from "./pages/ProductPage";
 import Panier from "./pages/Panier";
+import ShowCommande from "./pages/commande/ShowCommande";
 
 function App() {
   return (
@@ -107,6 +108,14 @@ function App() {
           element={
             <ProtectedRoute>
               <Commande />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/commande/:id/show"
+          element={
+            <ProtectedRoute>
+              <ShowCommande />
             </ProtectedRoute>
           }
         />

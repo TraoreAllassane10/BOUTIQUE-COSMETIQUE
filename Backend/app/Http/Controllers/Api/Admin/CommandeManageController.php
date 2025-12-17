@@ -10,12 +10,16 @@ class CommandeManageController extends Controller
 {
     public function __construct(
         public CommandeServices $commandeServices
-    )
-    {}
+    ) {}
 
     public function index()
     {
         return $this->commandeServices->all();
+    }
+
+    public function show($commande)
+    {
+        return $this->commandeServices->find($commande);
     }
 
     public function updateStatus(Request $request, $commande)
@@ -25,6 +29,6 @@ class CommandeManageController extends Controller
 
     public function delete($commande)
     {
-       return $this->commandeServices->delete($commande);
+        return $this->commandeServices->delete($commande);
     }
 }

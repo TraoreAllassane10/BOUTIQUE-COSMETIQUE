@@ -32,7 +32,7 @@ import {
 import { DonneesParPage } from "@/utlis/pagination";
 import PaginationBar from "@/components/PaginationBar";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 interface Commande {
   id: number;
@@ -157,9 +157,9 @@ const Commande = () => {
                     </TableCell>
 
                     <TableCell className="flex gap-2">
-                      <a href="">
+                      <Link to={`/commande/${commande.id}/show`}>
                         <Eye />
-                      </a>
+                      </Link>
                       <a href="">
                         <Edit />
                       </a>

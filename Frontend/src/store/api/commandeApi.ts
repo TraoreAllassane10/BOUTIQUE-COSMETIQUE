@@ -5,10 +5,14 @@ export const commandeApi = createApi({
   reducerPath: "commandeApi",
   baseQuery,
   endpoints: (builder) => ({
-
     // Recuperation des commandes
     getCommandes: builder.query({
       query: () => "/admin/commandes",
+    }),
+
+    // récuperation d'une commande
+    getCommandeById: builder.query({
+      query: (id) => `/admin/commandes/${id}`,
     }),
 
     // Passation d'une commande
@@ -22,12 +26,17 @@ export const commandeApi = createApi({
 
     // Suppression d'une commande
     deleteCommande: builder.mutation({
-        query: (id) => ({
-            url: `/admin/commandes/${id}`,
-            method: "DELETE",
-        })
-    })
+      query: (id) => ({
+        url: `/admin/commandes/${id}`,
+        method: "DELETE",
+      }),
+    }),
   }),
 });
 
-export const { useCreateCommandeMutation, useGetCommandesQuery, useDeleteCommandeMutation } = commandeApi;
+export const {
+  useCreateCommandeMutation,
+  useGetCommandesQuery,
+  useGetCommandeByIdQuery,
+  useDeleteCommandeMutation,
+} = commandeApi;

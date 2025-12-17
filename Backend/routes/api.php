@@ -47,6 +47,7 @@ Route::middleware('auth:sanctum')->group(function () {
         //Routes de gestion des commandes
         Route::controller(CommandeManageController::class)->group(function () {
             Route::get('/admin/commandes', 'index')->name('commandes');
+             Route::get('/admin/commandes/{commande}', 'show')->name('commandes.show');
             Route::put('/admin/commandes/{commande}/status', 'updateStatus')->name('commandes.updateStatus');
             Route::delete('/admin/commandes/{commande}', 'delete')->name('commandes.delete');
         });

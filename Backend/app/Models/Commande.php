@@ -13,6 +13,7 @@ class Commande extends Model
     use HasFactory;
 
     protected $guarded = []; 
+    protected $with = ["produits", "user"];
 
     public function user() : BelongsTo
     {

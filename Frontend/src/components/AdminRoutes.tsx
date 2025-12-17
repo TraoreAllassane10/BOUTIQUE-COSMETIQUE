@@ -15,7 +15,8 @@ interface User {
 
 const AdminRoutes = ({ children }: { children: React.ReactNode }) => {
   // Recuperation du state user
-  const user: User | null = useSelector(selectCurrentUser);
+  // const user: User | null = useSelector(selectCurrentUser);
+  const user = JSON.parse(localStorage.getItem("user"))
   let isAdmin = false;
 
   // Return true si l'utlisateur a un role Admin

@@ -16,8 +16,15 @@ const NavBar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // const user = useSelector(selectCurrentUser);
   const user = JSON.parse(localStorage.getItem("user"));
+  let isAdmin = false;
+
+  // Return true si l'utlisateur a un role Admin
+  user?.roles?.map((role: { name: string }) => {
+    if (role.name == "Admin") {
+      isAdmin = true;
+    }
+  });
 
   //State global qui contient le nombre de produit dans le panier
   const cartCount = useSelector(selectCartCount);
@@ -27,10 +34,10 @@ const NavBar = () => {
 
   // Deconnexion d'un utilisateur
   const handleLogout = () => {
-    dispatch(logout())
+    dispatch(logout());
 
-    navigate(0)
-  }
+    navigate(0);
+  };
 
   return (
     <header className="bg-white shadow-sm sticky top-0 z-50">
@@ -85,7 +92,19 @@ const NavBar = () => {
                   <span className="text-sm font-medium">{user.name}</span>
                 </div>
 
-                <button onClick={handleLogout} className="text-sm text-red-600 hover:text-red-800 transition cursor-pointer">
+                {isAdmin && (
+                  <Link
+                    to="/dashboard"
+                    className="text-sm bg-slate-500 text-white hover:bg-slate-800 p-2 rounded transition cursor-pointer"
+                  >
+                    Dashbaord
+                  </Link>
+                )}
+
+                <button
+                  onClick={handleLogout}
+                  className="text-sm text-red-600 hover:text-red-800 transition cursor-pointer"
+                >
                   Déconnexion
                 </button>
               </div>

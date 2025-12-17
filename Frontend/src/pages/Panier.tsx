@@ -103,7 +103,7 @@ export default function Panier() {
   };
 
   // PASSATION DE LA COMMANDE
-  const [createCommande, { error: commandeError }] =
+  const [createCommande, { error: commandeError, isLoading: commandeLoading }] =
     useCreateCommandeMutation();
 
   const handleCommande = async () => {
@@ -377,10 +377,11 @@ export default function Panier() {
                   {/* Boutons */}
                   <Button
                     onClick={handleCommande}
+                    disabled={commandeLoading}
                     className="w-full bg-purple-600 hover:bg-purple-700 py-6 text-lg cursor-pointer"
                   >
                     <Lock className="w-5 h-5 mr-2" />
-                    Passer la commande
+                    {commandeLoading ? "Traitement..." : "Passer la commande"}
                   </Button>
 
                   <div className="text-center space-y-2">
